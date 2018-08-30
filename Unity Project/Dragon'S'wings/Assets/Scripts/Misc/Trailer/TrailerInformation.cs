@@ -5,8 +5,6 @@ using UnityEngine;
 public class TrailerInformation : MonoBehaviour
 {
     public SpriteRenderer originalRenderer;
-    public float duration;
-    public float time = 0.0f;
     public float timeLastPart = 0.0f;
     public float partDistance;
     public float lifeTime;
@@ -14,22 +12,28 @@ public class TrailerInformation : MonoBehaviour
     public float scaleDecreasePerSecond;
     public List<TrailerPart> trailerParts = new List<TrailerPart>();
 
-    public void Init(SpriteRenderer originalRenderer, float duration, float partDistance, float lifeTime, float alphaDecreasePerSecond, float scaleDecreasePerSecond)
+    public void Init(SpriteRenderer originalRenderer, float partDistance, float lifeTime, float targetLastScale)
     {
         this.originalRenderer = originalRenderer;
-        this.duration = duration;
         this.partDistance = partDistance;
         timeLastPart = partDistance;
         this.lifeTime = lifeTime;
-        this.alphaDecreasePerSecond = alphaDecreasePerSecond;
-        this.scaleDecreasePerSecond = scaleDecreasePerSecond;
+
+        alphaDecreasePerSecond = 255.0f / lifeTime;
+        scaleDecreasePerSecond = (1.0f - targetLastScale) / lifeTime;
     }
 
-    public bool CustomUpdate(float time)
+    public void CustomUpdate(float time)
     {
         for (int i = 0; i < trailerParts.Count; i++)
         {
             TrailerPart trailerPart = trailerParts[i];
+            Debug.Log("Color before: " + trailerPart.spriteRenderer.color);
+            float newValue = trailerPart.spriteRenderer.color.a - alphaDecreasePerSecond * time;
+            trailerPart.spriteRenderer.color = new Color(newValue, newValue, newValue, newValue);
+            Debug.Log("Color after: " + trailerPart.spriteRenderer.color);
+
+           // Debug.Log(alphaDecreasePerSecond * time);
 
             trailerPart.spriteRenderer.transform.localScale -= Vector3.one * scaleDecreasePerSecond * time;
 
@@ -37,7 +41,7 @@ public class TrailerInformation : MonoBehaviour
             {
                 trailerParts.Remove(trailerPart);
                 Trailer.GiveTrailerPart(trailerPart);
-                Debug.Log("Test");
+             //   Debug.Log("Test");
             }
         }
         if ((timeLastPart -= time) <= 0.0f)
@@ -49,8 +53,5 @@ public class TrailerInformation : MonoBehaviour
             trailerParts.Add(trailerPart);
             timeLastPart = partDistance;
         }
-        if ((duration -= time) <= 0.0f)
-            return true;
-        return false;
     }
 }

@@ -29,20 +29,11 @@ public class Trailer : MonoBehaviour
             TrailerInformation trailerInformation;
             trailerInformations.TryGetValue(spriteRenderer, out trailerInformation);
 
-            if (trailerInformation.CustomUpdate(Time.deltaTime))
-            {
-                trailerInformations.Remove(trailerInformation.originalRenderer);
-                for (int j = 0; j < trailerInformation.trailerParts.Count; j++)
-                {
-                    TrailerPart trailerPart = trailerInformation.trailerParts[j];
-                    GiveTrailerPart(trailerPart);
-                }
-                Destroy(trailerInformation.gameObject);
-            }
+            trailerInformation.CustomUpdate(Time.deltaTime);
         }
 	}
 
-    public static void AddTrailer(SpriteRenderer spriteRenderer, float duration, float partDistance, float lifeTime, float alphaDecreasePerSecond, float scaleDecreasePerSecond)
+    public static void AddTrailer(SpriteRenderer spriteRenderer, float partDistance, float lifeTime, float targetLastScale)
     {
         if (trailerInformations.ContainsKey(spriteRenderer))
         {
@@ -54,7 +45,7 @@ public class Trailer : MonoBehaviour
             newGameObject.transform.parent = trailer.transform;
 
             TrailerInformation trailerInformation = newGameObject.AddComponent<TrailerInformation>();
-            trailerInformation.Init(spriteRenderer, duration, partDistance, lifeTime, alphaDecreasePerSecond, scaleDecreasePerSecond);
+            trailerInformation.Init(spriteRenderer, partDistance, lifeTime, targetLastScale);
 
             trailerInformations.Add(spriteRenderer, trailerInformation);
         }
@@ -62,7 +53,17 @@ public class Trailer : MonoBehaviour
 
     public static void RemoveTrailer(SpriteRenderer spriteRenderer)
     {
+        TrailerInformation trailerInformation;
+        trailerInformations.TryGetValue(spriteRenderer, out trailerInformation);
         trailerInformations.Remove(spriteRenderer);
+
+        trailerInformations.Remove(spriteRenderer);
+        for (int j = 0; j < trailerInformation.trailerParts.Count; j++)
+        {
+            TrailerPart trailerPart = trailerInformation.trailerParts[j];
+            GiveTrailerPart(trailerPart);
+        }
+        Destroy(trailerInformation.gameObject);
     }
 
     public static TrailerPart TakeTrailerPart()

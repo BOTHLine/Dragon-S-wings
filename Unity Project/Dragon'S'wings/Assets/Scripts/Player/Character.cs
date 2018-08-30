@@ -76,6 +76,7 @@ public class Character : MonoBehaviour
         dashTime = dashDistance / dashSpeed;
 
         currentActionState = ActionState.Free;
+        Trailer.AddTrailer(spriteRenderer, 0.05f, 1.0f, 0.8f);
     }
 
     private void InitComponents()
@@ -210,7 +211,6 @@ public class Character : MonoBehaviour
                 canDash = false;
                 timeDashing = 0.0f;
                 dashingDirection = facingDirection.normalized;
-                Trailer.AddTrailer(spriteRenderer, dashTime, 0.05f, 1.0f, 10.0f, 0.1f);
                 break;
             case ActionState.SwingingPrepare:
                 swingRelativePosition = (Vector2)transform.position - distanceJoint2D.connectedAnchor;
