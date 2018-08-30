@@ -13,13 +13,13 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - PlayerFalling
+  - PlayerDashing
+  - Level
+  - Obstacle
+  - Hook
+  - Enemy
   - 
   - 
   - 
