@@ -187,6 +187,7 @@ public class Hook : MonoBehaviour
     private Vector2 GetClosestColliderPointFromRaycastHit2D(RaycastHit2D hit)
     {
         PolygonCollider2D coll = (PolygonCollider2D)hit.collider;
+        Debug.Log(hit.collider);
 
         Vector2[] points = new Vector2[coll.points.Length];
         for (int i = 0; i < points.Length; i++)

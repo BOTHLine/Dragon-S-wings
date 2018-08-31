@@ -11,4 +11,6 @@ public class LayerList
     public static readonly int Obstacle = LayerMask.NameToLayer("Obstacle");
     public static readonly int Hook = LayerMask.NameToLayer("Hook");
     public static readonly int Enemy = LayerMask.NameToLayer("Enemy");
+    public static readonly int EnemyDashing = LayerMask.NameToLayer("EnemyDashing");
+    public static readonly int EnemyFalling = LayerMask.NameToLayer("EnemyFalling");
 }
