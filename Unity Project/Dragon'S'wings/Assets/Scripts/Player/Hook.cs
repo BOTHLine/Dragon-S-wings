@@ -237,6 +237,7 @@ public class Hook : MonoBehaviour
         else
         {
             ResetAnchorPoints();
+            player.character.lastActionState = Character.ActionState.Free;
             player.character.SetActionState(Character.ActionState.Falling);
         }
     }

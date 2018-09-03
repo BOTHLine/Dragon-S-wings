@@ -28,7 +28,7 @@ public class Character : MonoBehaviour
 
     [SerializeField]
     public ActionState currentActionState;// { get; private set; }
-    private ActionState lastActionState;
+    public ActionState lastActionState;
 
     private Vector2 movingDirection = Vector2.zero;
     public float movementSpeed = 5.0f;
