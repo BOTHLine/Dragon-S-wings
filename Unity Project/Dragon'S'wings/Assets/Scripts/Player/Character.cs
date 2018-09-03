@@ -178,18 +178,18 @@ public class Character : MonoBehaviour
 
     public void SetActionState(ActionState newActionState)
     {
-        lastActionState = currentActionState;
-
-        switch (lastActionState)
+        switch (currentActionState)
         {
             case ActionState.Free:
                 lastSavePosition = transform.position;
+                lastActionState = currentActionState;
                 break;
             case ActionState.Falling:
                 timeFalling = 0.0f;
                 break;
             case ActionState.Hooked:
                 lastSavePosition = transform.position;
+                lastActionState = currentActionState;
                 break;
         }
 
@@ -270,7 +270,7 @@ public class Character : MonoBehaviour
 
     private void HandlePullInput()
     {
-        if (Input.GetButtonDown(InputList.Pull))
+        if (!Input.GetButton(InputList.Hook))
             SetActionState(ActionState.Pulling);
     }
 
@@ -315,7 +315,7 @@ public class Character : MonoBehaviour
     {
         if (numIslandCollisions > 0)
         {
-            SetActionState(ActionState.Free);
+            SetActionState(lastActionState);
             return;
         }
 
@@ -361,8 +361,11 @@ public class Character : MonoBehaviour
 
     private void HandlePullAction()
     {
-        if (Input.GetButton(InputList.Pull))
+        if (Input.GetButton(InputList.Hook))
+        {
+            SetActionState(ActionState.Falling);
             return;
+        }
         if ((distanceJoint2D.connectedAnchor - (Vector2) transform.position).magnitude <= pullThreshold)
         {
             player.hook.RemoveLastAnchorPoint();
