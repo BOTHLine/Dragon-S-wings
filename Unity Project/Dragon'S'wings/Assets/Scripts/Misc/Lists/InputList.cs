@@ -9,6 +9,5 @@ public class InputList
     public static readonly string Hook = "Hook";
     public static readonly string Release = "Release";
     public static readonly string Dash = "Dash";
-    public static readonly string Pull = "Pull";
     public static readonly string Swing = "Swing";
 }
