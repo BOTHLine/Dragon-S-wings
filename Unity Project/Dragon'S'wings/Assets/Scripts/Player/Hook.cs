@@ -31,6 +31,8 @@ public class Hook : MonoBehaviour
     private float currentRopeLength = 0.0f;
     private float lastAddedRopeLength = 0.0f;
 
+    public float distanceThreshold = 0.01f;
+
     private void Awake()
     {
         InitComponents();
@@ -102,8 +104,9 @@ public class Hook : MonoBehaviour
 
         if (hit.collider)
         {
-            anchorPoints.Add(new AnchorPoint(hit.point, false));
-            availableRopeLength = ((Vector2)transform.position - hit.point).magnitude;
+            Vector2 anchorPosition = hit.point + ((Vector2)transform.position - hit.point).normalized * distanceThreshold;
+            anchorPoints.Add(new AnchorPoint(anchorPosition, false));
+            availableRopeLength = ((Vector2)transform.position - anchorPosition).magnitude;
             player.character.distanceJoint2D.enabled = true;
             player.character.distanceJoint2D.distance = availableRopeLength;
             player.character.distanceJoint2D.connectedAnchor = GetLastAnchorPoint().position;
@@ -165,7 +168,8 @@ public class Hook : MonoBehaviour
         RaycastHit2D raycastHit2D = Physics2D.Raycast(transform.position, GetLastAnchorPoint().position - (Vector2)transform.position, (GetLastAnchorPoint().position - (Vector2)transform.position).magnitude, layerMask);
         if (raycastHit2D.collider)
         {
-            Vector2 wrapPosition = GetClosestColliderPointFromRaycastHit2D(raycastHit2D);
+            Vector2 wrapPoint = GetClosestColliderPointFromRaycastHit2D(raycastHit2D);
+            Vector2 wrapPosition = wrapPoint + ((Vector2) transform.position - wrapPoint).normalized * distanceThreshold;
             if (wrapPosition.Equals(GetLastAnchorPoint().position))
                 return;
 
