@@ -372,11 +372,23 @@ public class Character : MonoBehaviour
         }
 
         Vector2 forceDirection = distanceJoint2D.connectedAnchor - (Vector2) transform.position;
-        rigidbody2D.AddForce(forceDirection.normalized * pullSpeed);
+        if (pullVelocity == 0.0f)
+        {
+            rigidbody2D.velocity = forceDirection.normalized * pullSpeed;
+        } else
+        {
+            rigidbody2D.AddForce(forceDirection.normalized * pullVelocity);
+            if (rigidbody2D.velocity.magnitude > pullSpeed)
+            {
+                rigidbody2D.velocity = rigidbody2D.velocity.normalized * pullSpeed;
+            }
+        }
 
         float maxDistance = ((Vector2) transform.position - distanceJoint2D.connectedAnchor).magnitude;
         if (maxDistance < distanceJoint2D.distance)
+        {
             distanceJoint2D.distance = maxDistance;
+        }
     }
 
     private void HandleSwingAction()
@@ -390,7 +402,18 @@ public class Character : MonoBehaviour
         Vector2 swingDirection = swingClockwise ? new Vector2(-midVector.y, midVector.x) : new Vector2(midVector.y, -midVector.x);
         Debug.DrawRay(transform.position, swingDirection);
         distanceJoint2D.distance = midVector.magnitude;
-        rigidbody2D.AddForce(swingDirection.normalized * swingSpeed);
+        if (swingVelocity == 0.0f)
+        {
+            rigidbody2D.velocity = swingDirection.normalized * swingSpeed;
+        }
+        else
+        {
+            rigidbody2D.AddForce(swingDirection.normalized * swingVelocity);
+            if (rigidbody2D.velocity.magnitude > swingSpeed)
+            {
+                rigidbody2D.velocity = rigidbody2D.velocity.normalized * swingSpeed;
+            }
+        }
         //rigidbody2D.velocity = swingDirection.normalized * swingSpeed;
     }
 
