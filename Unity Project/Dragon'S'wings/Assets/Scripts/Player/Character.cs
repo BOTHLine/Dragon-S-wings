@@ -13,7 +13,6 @@ public class Character : MonoBehaviour
         Falling,
         Dashing,
         Hooked,
-        SwingingPrepare,
         Swinging,
         Pulling,
         Repositioning
@@ -54,10 +53,14 @@ public class Character : MonoBehaviour
     private Vector2 lastSavePosition;
 
     public float pullSpeed = 5.0f;
+    public float pullVelocity = 0.0f;
+    public float pullMaxSpeed = 0.0f;
     // public float maxPullSpeed = 100.0f;
     private float pullThreshold = 0.5f;
 
     public float swingSpeed = 10.0f;
+    public float swingVelocity = 0.0f;
+    public float swingMaxSpeed = 0.0f;
     private Vector2 swingRelativePosition;
     private bool swingClockwise;
     public float swingForce = 10.0f;
@@ -134,14 +137,10 @@ public class Character : MonoBehaviour
             case ActionState.Hooked:
                 HandleReleaseInput();
                 HandlePullInput();
-                HandleSwingPrepareInput();
+                HandleSwingInput();
                 break;
             case ActionState.Pulling:
                 HandleReleaseInput();
-                break;
-            case ActionState.SwingingPrepare:
-                HandleReleaseInput();
-                HandleSwingInput();
                 break;
             case ActionState.Swinging:
                 HandleReleaseInput();
@@ -212,9 +211,6 @@ public class Character : MonoBehaviour
                 dashingDirection = facingDirection.normalized;
                 Trailer.AddTrailer(spriteRenderer, dashTime, 0.05f, 1.0f, 10.0f, 0.1f);
                 break;
-            case ActionState.SwingingPrepare:
-                swingRelativePosition = (Vector2)transform.position - distanceJoint2D.connectedAnchor;
-                break;
             case ActionState.Swinging:
                 gameObject.layer = LayerList.PlayerDashing;
                 break;
@@ -278,37 +274,35 @@ public class Character : MonoBehaviour
             SetActionState(ActionState.Pulling);
     }
 
-    private void HandleSwingPrepareInput()
-    {
-        if (Input.GetButtonDown(InputList.Swing))
-            SetActionState(ActionState.SwingingPrepare);
-    }
-
     private void HandleSwingInput()
     {
-        if (Mathf.Abs(movingDirection.x) > Mathf.Abs(movingDirection.y))
+        if (Input.GetButton(InputList.Swing))
         {
-            if (swingRelativePosition.y != 0)
+            swingRelativePosition = (Vector2)transform.position - distanceJoint2D.connectedAnchor;
+            if (Mathf.Abs(movingDirection.x) > Mathf.Abs(movingDirection.y))
             {
-                swingClockwise = (swingRelativePosition.y > 0 && movingDirection.x > 0) || (swingRelativePosition.y < 0 && movingDirection.x < 0);
+                if (swingRelativePosition.y != 0)
+                {
+                    swingClockwise = (swingRelativePosition.y > 0 && movingDirection.x > 0) || (swingRelativePosition.y < 0 && movingDirection.x < 0);
+                }
+                else
+                {
+                    swingClockwise = (swingRelativePosition.x > 0 && movingDirection.y < 0) || (swingRelativePosition.x < 0 && movingDirection.y > 0);
+                }
+                SetActionState(ActionState.Swinging);
             }
-            else
+            else if (Mathf.Abs(movingDirection.y) > Mathf.Abs(movingDirection.x))
             {
-                swingClockwise = (swingRelativePosition.x > 0 && movingDirection.y < 0) || (swingRelativePosition.x < 0 && movingDirection.y > 0);
+                if (swingRelativePosition.x != 0)
+                {
+                    swingClockwise = (swingRelativePosition.x > 0 && movingDirection.y < 0) || (swingRelativePosition.x < 0 && movingDirection.y > 0);
+                }
+                else
+                {
+                    swingClockwise = (swingRelativePosition.y > 0 && movingDirection.x > 0) || (swingRelativePosition.y < 0 && movingDirection.x < 0);
+                }
+                SetActionState(ActionState.Swinging);
             }
-            SetActionState(ActionState.Swinging);
-        }
-        else if (Mathf.Abs(movingDirection.y) > Mathf.Abs(movingDirection.x))
-        {
-            if (swingRelativePosition.x != 0)
-            {
-                swingClockwise = (swingRelativePosition.x > 0 && movingDirection.y < 0) || (swingRelativePosition.x < 0 && movingDirection.y > 0);
-            }
-            else
-            {
-                swingClockwise = (swingRelativePosition.y > 0 && movingDirection.x > 0) || (swingRelativePosition.y < 0 && movingDirection.x < 0);
-            }
-            SetActionState(ActionState.Swinging);
         }
     }
 
