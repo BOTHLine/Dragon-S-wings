@@ -381,6 +381,11 @@ public class Character : MonoBehaviour
 
     private void HandleSwingAction()
     {
+        if (!Input.GetButton(InputList.Swing))
+        {
+            SetActionState(ActionState.Falling);
+            return;
+        }
         Vector2 midVector = distanceJoint2D.connectedAnchor - (Vector2) transform.position;
         Vector2 swingDirection = swingClockwise ? new Vector2(-midVector.y, midVector.x) : new Vector2(midVector.y, -midVector.x);
         Debug.DrawRay(transform.position, swingDirection);
