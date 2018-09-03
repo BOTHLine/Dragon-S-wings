@@ -27,9 +27,9 @@ public class Hook : MonoBehaviour
     private int layerMask = 0;
 
     public float maxRopeLength = 10.0f;
-    private float availableRopeLength;
-    private float currentRopeLength = 0.0f;
-    private float lastAddedRopeLength = 0.0f;
+    public float availableRopeLength;
+    public float currentRopeLength = 0.0f;
+    public float lastAddedRopeLength = 0.0f;
 
     public float distanceThreshold = 0.01f;
 
@@ -183,6 +183,9 @@ public class Hook : MonoBehaviour
             lastAddedRopeLength = (anchorPoints[anchorPoints.Count - 1].position - anchorPoints[anchorPoints.Count - 2].position).magnitude;
             currentRopeLength += lastAddedRopeLength;
 
+            Debug.Log("Last Added Rope Length: " + lastAddedRopeLength);
+            Debug.Log("Current Rope Length: " + currentRopeLength);
+
             player.character.distanceJoint2D.distance = availableRopeLength - currentRopeLength;
             player.character.distanceJoint2D.connectedAnchor = GetLastAnchorPoint().position;
         }
@@ -230,6 +233,9 @@ public class Hook : MonoBehaviour
         
         if (anchorPoints.Count > 0)
         {
+            Debug.Log("Available Rope Length: " + availableRopeLength);
+            Debug.Log("Current Rope Length: " + currentRopeLength);
+            Debug.Log("Last Added Rope Length: " + lastAddedRopeLength);
             currentRopeLength -= lastAddedRopeLength;
             player.character.distanceJoint2D.distance = availableRopeLength - currentRopeLength;
             player.character.distanceJoint2D.connectedAnchor = GetLastAnchorPoint().position;
