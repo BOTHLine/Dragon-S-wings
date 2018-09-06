@@ -3,29 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(PolygonCollider2D))]
-public class Island : MonoBehaviour
+public class TestScript : MonoBehaviour
 {
-    public float offset = 0.1f;
-
-    private PolygonCollider2D polygonCollider;
-    private EdgeCollider2D edgeCollider;
+    public float offset;
 
     private void Awake()
     {
-        GameObject edgeColliderObject = new GameObject();
-        edgeColliderObject.transform.parent = transform;
-        edgeColliderObject.layer = LayerList.LevelEdge;
-
-        polygonCollider = GetComponent<PolygonCollider2D>();
-        edgeCollider = edgeColliderObject.AddComponent<EdgeCollider2D>();
-
-        Vector2[] points = new Vector2[polygonCollider.points.Length + 1];
-        for (int i = 0; i < polygonCollider.points.Length; i++)
-        {
-            points[i] = polygonCollider.points[i];
-        }
-        points[points.Length - 1] = points[0];
-        edgeCollider.points = points;
+        CalculateInnerPolygonCollider2D();
     }
 
     private void CalculateInnerPolygonCollider2D()
@@ -42,7 +26,7 @@ public class Island : MonoBehaviour
 
             Vector2 lastVector = lastPoint - firstCollider.points[i];
             Vector2 nextVector = nextPoint - firstCollider.points[i];
-
+            
             Vector2 directionVector = (lastVector.normalized + nextVector.normalized) / 2.0f;
 
             float angle = Vector2.SignedAngle(lastVector, nextVector);
@@ -50,7 +34,14 @@ public class Island : MonoBehaviour
             {
                 directionVector = -directionVector;
             }
-
+            /*
+             * TODO: Richtigen Fälle erkennen: Spitzer, Stumpfer und Überstumpfer Winkel und entsprechend handhaben
+            if (angle > 90)
+            {
+                angle = 90 - angle;
+            }
+            points[i] = firstCollider.points[i] + (directionVector.normalized * CalculateOffset(angle));
+            */
             points[i] = firstCollider.points[i] + (directionVector.normalized * offset);
         }
         secondCollider.points = points;
@@ -68,5 +59,12 @@ public class Island : MonoBehaviour
         if (++index >= points.Length)
             return points[0];
         return points[index];
+    }
+
+    private float CalculateOffset(float angle)
+    {
+        float realOffset = offset / Mathf.Sin(angle);
+
+        return realOffset;
     }
 }

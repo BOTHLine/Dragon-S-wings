@@ -27,8 +27,7 @@ public class Character : MonoBehaviour
     private Transform crosshair;
 
     [SerializeField]
-    public ActionState currentActionState;// { get; private set; }
-    public ActionState lastActionState;
+    public ActionState currentActionState;
 
     private Vector2 movingDirection = Vector2.zero;
     public float movementSpeed = 5.0f;
@@ -38,7 +37,6 @@ public class Character : MonoBehaviour
 
     public float fallTime = 0.5f;
     private float timeFalling;
-    public int numIslandCollisions = 0;
 
     private Vector2 facingDirection = Vector2.down;
     private Vector2 dashingDirection = Vector2.zero;
@@ -69,6 +67,9 @@ public class Character : MonoBehaviour
     public float repositioningDistance;
     public float repositioningTime;
     public float timeRepositioning;
+    
+    private FallingCondition fallingCondition;
+    private FallingSave fallingSave;
 
     private void Awake()
     {
@@ -89,6 +90,8 @@ public class Character : MonoBehaviour
         player = GetComponentInParent<Player>();
         
         spriteRenderer = GetComponent<SpriteRenderer>();
+        fallingCondition = GetComponentInChildren<FallingCondition>();
+        fallingSave = transform.Find("FallingSave").GetComponent<FallingSave>();
     }
 
     private void InitRigidBody2D()
@@ -156,7 +159,7 @@ public class Character : MonoBehaviour
                 HandleMovementAction();
                 break;
             case ActionState.Falling:
-                HandleFalling();
+                HandleFallingAction();
                 break;
             case ActionState.Dashing:
                 HandleDashAction();
@@ -182,14 +185,13 @@ public class Character : MonoBehaviour
         {
             case ActionState.Free:
                 lastSavePosition = transform.position;
-                lastActionState = currentActionState;
                 break;
             case ActionState.Falling:
                 timeFalling = 0.0f;
+                fallingSave.gameObject.SetActive(false);
                 break;
             case ActionState.Hooked:
                 lastSavePosition = transform.position;
-                lastActionState = currentActionState;
                 break;
         }
 
@@ -201,14 +203,16 @@ public class Character : MonoBehaviour
                 canDash = true;
                 break;
             case ActionState.Falling:
+                player.hook.ResetAnchorPoints();
                 gameObject.layer = LayerList.PlayerFalling;
                 rigidbody2D.velocity = Vector2.zero;
+                fallingSave.gameObject.SetActive(true);
                 break;
             case ActionState.Dashing:
                 gameObject.layer = LayerList.PlayerDashing;
                 canDash = false;
                 timeDashing = 0.0f;
-                dashingDirection = facingDirection.normalized;
+                dashingDirection = aimingDirection.normalized;
                 Trailer.AddTrailer(spriteRenderer, dashTime, 0.05f, 1.0f, 10.0f, 0.1f);
                 break;
             case ActionState.Swinging:
@@ -311,11 +315,11 @@ public class Character : MonoBehaviour
         rigidbody2D.velocity = movingDirection.normalized * movementSpeed;
     }
 
-    private void HandleFalling()
+    private void HandleFallingAction()
     {
-        if (numIslandCollisions > 0)
+        if (fallingCondition.numIslandCollisions > 0)
         {
-            SetActionState(lastActionState);
+            SetActionState(ActionState.Free);
             return;
         }
 
@@ -338,10 +342,10 @@ public class Character : MonoBehaviour
         }
     }
 
-    private void StartRepositioning(float speed, Vector2 vector)
+    public void StartRepositioning(float speed, Vector2 distanceVector)
     {
-        repositioningDistance = vector.magnitude;
-        repositioningDirection = vector.normalized;
+        repositioningDistance = distanceVector.magnitude;
+        repositioningDirection = distanceVector.normalized;
         repositioningSpeed = speed;
         repositioningTime = repositioningDistance / repositioningSpeed;
         SetActionState(ActionState.Repositioning);
@@ -423,26 +427,25 @@ public class Character : MonoBehaviour
         SetActionState(ActionState.Free);
     }
 
+    /*
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.layer == LayerList.Level)
         {
-            numIslandCollisions++;
+            //numIslandCollisions++;
         }
     }
+    */
 
+    /*
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.layer == LayerList.Level)
         {
-            numIslandCollisions--;
+            //numIslandCollisions--;
         }
     }
-
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-
-    }
+    */
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -455,6 +458,8 @@ public class Character : MonoBehaviour
                     Vector2 vectorToEnemyPosition = enemy.transform.position - transform.position;
                     enemy.rigidbody2D.velocity = vectorToEnemyPosition.normalized * rigidbody2D.velocity.magnitude;
                     StartRepositioning(rigidbody2D.velocity.magnitude, vectorToEnemyPosition);
+
+                    enemy.Push();
                 }
                 break;
             case ActionState.Dashing:
@@ -464,6 +469,8 @@ public class Character : MonoBehaviour
                     Vector2 vectorToEnemyPosition = enemy.transform.position - transform.position;
                     enemy.rigidbody2D.velocity = vectorToEnemyPosition.normalized * rigidbody2D.velocity.magnitude;
                     StartRepositioning(dashSpeed, vectorToEnemyPosition);
+
+                    enemy.Push();
                 }
                 break;
         }
