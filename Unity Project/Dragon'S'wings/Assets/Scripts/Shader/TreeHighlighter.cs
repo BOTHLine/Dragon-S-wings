@@ -12,11 +12,16 @@ public class TreeHighlighter : MonoBehaviour
     public bool checkTrue = false;
     private Hook hook;
     // Use this for initialization
-    void Start ()
+    void LateStart ()
     {
         rend = GetComponent<Renderer>();
         
         rend.material.SetColor("_Color", new Color(1, 1, 1, 0));
+
+
+        Debug.Log(player);
+        Debug.Log(player.transform.Find("Character"));
+        Debug.Log(player.transform.Find("Character").Find("Hook"));
 
         hook = player.transform.Find("Character").Find("Hook").gameObject.GetComponent<Hook>();
         Debug.Log(hook);
@@ -49,6 +54,7 @@ public class TreeHighlighter : MonoBehaviour
     {
         Debug.Log(hook.maxRopeLength);
         RaycastHit2D hit = Physics2D.Raycast(player.transform.position, cursor.transform.position - player.transform.position, hook.maxRopeLength);
+        Debug.DrawLine(player.transform.position, player.transform.position + (cursor.transform.position - player.transform.position).normalized * hook.maxRopeLength);
         if (hit.collider == coll)
             return true;
         return false;
