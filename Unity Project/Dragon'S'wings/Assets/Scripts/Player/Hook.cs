@@ -69,7 +69,6 @@ public class Hook : MonoBehaviour
             {
                 layerMask = layerMask | 1 << i;
             }
-            Debug.Log(layerMask);
         }
     }
 
