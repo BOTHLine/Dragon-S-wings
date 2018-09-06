@@ -24,7 +24,7 @@ public class Hook : MonoBehaviour
 
     private List<AnchorPoint> anchorPoints = new List<AnchorPoint>();
 
-    private int layerMask = 0;
+    public int layerMask { get; private set; }
 
     public float maxRopeLength = 10.0f;
     public float availableRopeLength;
@@ -61,6 +61,7 @@ public class Hook : MonoBehaviour
 
     private void CreateLayerMask()
     {
+        layerMask = 0;
         int layer = gameObject.layer;
         for (int i = 0; i < 32; i++)
         {
@@ -68,6 +69,7 @@ public class Hook : MonoBehaviour
             {
                 layerMask = layerMask | 1 << i;
             }
+            Debug.Log(layerMask);
         }
     }
 

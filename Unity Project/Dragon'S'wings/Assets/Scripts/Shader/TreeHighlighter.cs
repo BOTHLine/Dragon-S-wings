@@ -2,64 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Collider2D))]
 public class TreeHighlighter : MonoBehaviour
 {
-    Renderer rend;
+    private new Renderer renderer;
 
-    public GameObject player;
-    private GameObject cursor;
-    private Collider2D coll;
-    public bool checkTrue = false;
-    private Hook hook;
+    private void Awake()
+    {
+        renderer = GetComponent<SpriteRenderer>();
+    }
+
     // Use this for initialization
-    void LateStart ()
+    void Start ()
     {
-        rend = GetComponent<Renderer>();
-        
-        rend.material.SetColor("_Color", new Color(1, 1, 1, 0));
-
-
-        Debug.Log(player);
-        Debug.Log(player.transform.Find("Character"));
-        Debug.Log(player.transform.Find("Character").Find("Hook"));
-
-        hook = player.transform.Find("Character").Find("Hook").gameObject.GetComponent<Hook>();
-        Debug.Log(hook);
-        cursor = player.transform.Find("Character").Find("Crosshair").gameObject;
-        player = player.transform.Find("Character").gameObject;
-
-
-
-        coll = GetComponent<Collider2D>();
-    }
-	
-	// Update is called once per frame
-	void Update ()
-    {
-      
-            if (checkTarget())
-            {
-                rend.material.SetColor("_Color", new Color(1, 1, 1, 1));
-            }
-
-            else
-            {
-                rend.material.SetColor("_Color", new Color(1, 1, 1, 0));
-            }
-            checkTrue = false;
-        
-	}
-
-    public bool checkTarget()
-    {
-        Debug.Log(hook.maxRopeLength);
-        RaycastHit2D hit = Physics2D.Raycast(player.transform.position, cursor.transform.position - player.transform.position, hook.maxRopeLength);
-        Debug.DrawLine(player.transform.position, player.transform.position + (cursor.transform.position - player.transform.position).normalized * hook.maxRopeLength);
-        if (hit.collider == coll)
-            return true;
-        return false;
-
+        SetHighlight(false);
     }
 
-
+    public void SetHighlight(bool newState)
+    {
+        renderer.material.SetColor("_Color", new Color(1.0f, 1.0f, 1.0f, newState ? 1.0f : 0.0f));
+    }
 }

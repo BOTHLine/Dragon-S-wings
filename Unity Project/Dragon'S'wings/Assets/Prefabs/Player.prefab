@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4051018835727512}
   - component: {fileID: 114242717906790154}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56,7 +56,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4975687724923982}
   - component: {fileID: 212085883366610842}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Crosshair
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -75,7 +75,7 @@ GameObject:
   - component: {fileID: 120709825814510992}
   - component: {fileID: 212031233574300084}
   - component: {fileID: 50535190305425708}
-  m_Layer: 13
+  m_Layer: 16
   m_Name: Hook
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1027938447526118}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -6.96, y: 3.53, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4718774734950620}
@@ -225,7 +225,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7655c9a5a9b9e2a47bd29b6cdaad63ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxRopeLength: 10
+  maxRopeLength: 5.5
+  availableRopeLength: 0
+  currentRopeLength: 0
+  lastAddedRopeLength: 0
+  distanceThreshold: 0.01
 --- !u!114 &114756847329884268
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -238,6 +242,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentActionState: 0
+  lastActionState: 0
   movementSpeed: 5
   aimRadius: 2
   fallTime: 0.5
@@ -246,7 +251,11 @@ MonoBehaviour:
   dashDistance: 2
   dashForce: 5
   pullSpeed: 5
+  pullVelocity: 0
+  pullMaxSpeed: 0
   swingSpeed: 10
+  swingVelocity: 0
+  swingMaxSpeed: 0
   swingForce: 10
   repositioningSpeed: 0
   repositioningDistance: 0
@@ -424,7 +433,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 35
   m_Sprite: {fileID: 21300000, guid: f583b5ae76d9422428c654a1aaf21d19, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -470,7 +479,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 49
   m_Sprite: {fileID: 21300000, guid: b520c1dd67742c04cad42ced7f1307d2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

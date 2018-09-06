@@ -70,6 +70,8 @@ public class Character : MonoBehaviour
     public float repositioningTime;
     public float timeRepositioning;
 
+    private TreeHighlighter currentHighlighted;
+
     private void Awake()
     {
         InitComponents();
@@ -229,15 +231,56 @@ public class Character : MonoBehaviour
 
     private void HandleAimInput()
     {
-        Vector3 worldMousePosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0.0f));
+        Vector3 worldMousePosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -Camera.main.transform.position.z));
         Vector3 aimDirection = worldMousePosition - transform.position;
         float aimAngle = Mathf.Atan2(aimDirection.y, aimDirection.x);
         if (aimAngle < 0.0f)
             aimAngle = Mathf.PI * 2 + aimAngle;
 
         aimingDirection = Quaternion.Euler(0.0f, 0.0f, aimAngle * Mathf.Rad2Deg) * Vector2.right;
+        
+        Vector3 crosshairPosition = (Vector3)aimingDirection.normalized * Mathf.Min(aimDirection.magnitude, aimRadius);
 
-        crosshair.localPosition = (Vector3) aimingDirection.normalized * aimRadius;
+        Debug.Log(player.hook.layerMask);
+        RaycastHit2D raycastHit2D = Physics2D.Raycast(transform.position, crosshair.localPosition, player.hook.maxRopeLength);
+        raycastHit2D = Physics2D.Raycast(transform.position, crosshair.localPosition, player.hook.maxRopeLength, player.hook.layerMask);
+        //Debug.DrawLine(transform.position, trans ().normalized * player.hook.maxRopeLength);
+        if (raycastHit2D.collider)
+        {
+            Debug.DrawLine(transform.position, raycastHit2D.point);
+            if (raycastHit2D.distance < crosshairPosition.magnitude)
+            {
+                crosshairPosition = crosshairPosition.normalized * raycastHit2D.distance;
+            }
+            TreeHighlighter test = raycastHit2D.collider.GetComponent<TreeHighlighter>();
+            if (test)
+            {
+                if (currentHighlighted)
+                {
+                    if (test != currentHighlighted)
+                    {
+                        currentHighlighted.SetHighlight(false);
+                        test.SetHighlight(true);
+                        currentHighlighted = test;
+                    }
+                }
+                else
+                {
+                    test.SetHighlight(true);
+                    currentHighlighted = test;
+                }
+            } else if (currentHighlighted)
+            {
+                currentHighlighted.SetHighlight(false);
+                currentHighlighted = null;
+            }
+        }
+        else if (currentHighlighted)
+        {
+            currentHighlighted.SetHighlight(false);
+            currentHighlighted = null;
+        }
+        crosshair.transform.localPosition = crosshairPosition;
     }
 
     private void HandleMovementInput()
