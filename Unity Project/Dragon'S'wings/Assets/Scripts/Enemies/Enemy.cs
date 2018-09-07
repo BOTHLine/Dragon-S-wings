@@ -4,7 +4,7 @@ using UnityEngine;
 
 [RequireComponent (typeof(Rigidbody2D))]
 [RequireComponent (typeof(SpriteRenderer))]
-public class Enemy : MonoBehaviour
+public class Enemy : Entity
 {
     public enum ActionState
     {
@@ -12,7 +12,9 @@ public class Enemy : MonoBehaviour
         Chasing,
         Attacking,
         WaitingForAttack,
-        Staggered
+        Staggered,
+        Pushed,
+        Falling
     }
 
     private Blinker blinker;
@@ -46,6 +48,12 @@ public class Enemy : MonoBehaviour
 
     public int damage;
 
+    public float pushedStopThresholdVelocity = 1.0f;
+
+    private FallingCondition fallingCondition;
+    public float fallTime = 0.1f;
+    private float timeFalling = 0.0f;
+
     private void Awake()
     {
         InitComponents();
@@ -61,6 +69,8 @@ public class Enemy : MonoBehaviour
 
         attackRange = GetComponentInChildren<AttackRange>();
         hitArea = GetComponentInChildren<HitArea>();
+
+        fallingCondition = GetComponentInChildren<FallingCondition>();
     }
 
     private void InitRigidbody2D()
@@ -143,6 +153,12 @@ public class Enemy : MonoBehaviour
                     SetActionState(ActionState.Chasing);
                 }
                 break;
+            case ActionState.Pushed:
+                HandlePushedAction();
+                break;
+            case ActionState.Falling:
+                HandleFallingAction();
+                break;
         }
     }
 
@@ -156,11 +172,15 @@ public class Enemy : MonoBehaviour
             case ActionState.Attacking:
                 hitArea.ToggleShow();
                 break;
+            case ActionState.Falling:
+                timeFalling = 0.0f;
+                break;
         }
 
         switch (newActionState)
         {
             case ActionState.Idling:
+                gameObject.layer = LayerList.Enemy;
                 break;
             case ActionState.Chasing:
                 break;
@@ -173,6 +193,12 @@ public class Enemy : MonoBehaviour
                 break;
             case ActionState.Staggered:
                 timeStaggered = 0.0f;
+                break;
+            case ActionState.Pushed:
+                gameObject.layer = LayerList.EnemyDashing;
+                break;
+            case ActionState.Falling:
+                gameObject.layer = LayerList.EnemyFalling;
                 break;
         }
 
@@ -207,5 +233,39 @@ public class Enemy : MonoBehaviour
 
             SetActionState(ActionState.Staggered);
         }
+    }
+
+    public void Push()
+    {
+        SetActionState(ActionState.Pushed);
+    }
+
+    private void HandlePushedAction()
+    {
+        if (rigidbody2D.velocity.magnitude <= pushedStopThresholdVelocity)
+        {
+            SetActionState(ActionState.Falling);
+        }
+    }
+
+    private void HandleFallingAction()
+    {
+        if (fallingCondition.numIslandCollisions > 0)
+        {
+            SetActionState(ActionState.Idling);
+            return;
+        }
+
+        timeFalling += Time.fixedDeltaTime;
+        if (timeFalling >= fallTime)
+        {
+            // TODO: Other Kind of removing?
+            Destroy(gameObject);
+        }
+    }
+
+    public override bool CurrentStateAllowsFalling()
+    {
+        return (currentActionState == ActionState.Idling || currentActionState == ActionState.Falling);
     }
 }
