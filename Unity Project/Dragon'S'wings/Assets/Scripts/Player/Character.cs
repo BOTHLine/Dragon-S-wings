@@ -88,14 +88,13 @@ public class Character : Entity
         InitDistanceJoint2D();
 
         player = GetComponentInParent<Player>();
-        
+
         spriteRenderer = GetComponent<SpriteRenderer>();
-<<<<<<< HEAD
         boxCollider2D = GetComponent<BoxCollider2D>();
-=======
+
         fallingCondition = GetComponentInChildren<FallingCondition>();
+
         fallingSave = transform.Find("FallingSave").GetComponent<FallingSave>();
->>>>>>> Falling-Fix
     }
 
     private void InitRigidBody2D()
@@ -216,13 +215,7 @@ public class Character : Entity
                 gameObject.layer = LayerList.PlayerDashing;
                 canDash = false;
                 timeDashing = 0.0f;
-<<<<<<< HEAD
-                Vector2 dashDirection = (Vector2) crosshair.transform.localPosition - boxCollider2D.offset;
-                dashTime = dashDirection.magnitude / dashSpeed;
-                dashingDirection = dashDirection.normalized;
-=======
                 dashingDirection = aimingDirection.normalized;
->>>>>>> Falling-Fix
                 Trailer.AddTrailer(spriteRenderer, dashTime, 0.05f, 1.0f, 10.0f, 0.1f);
                 break;
             case ActionState.Swinging:
