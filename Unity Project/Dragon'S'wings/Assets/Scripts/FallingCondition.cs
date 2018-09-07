@@ -10,19 +10,19 @@ public class FallingCondition : MonoBehaviour
 
     public int numIslandCollisions = 0;
 
-    public bool entetiyShouldFall { get; private set; }
+    public bool entityShouldFall { get; private set; }
 
     private void Awake()
     {
         entity = GetComponentInParent<Entity>();
 
-        entetiyShouldFall = false;
+        entityShouldFall = false;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         numIslandCollisions++;
-        entetiyShouldFall = false;
+        entityShouldFall = false;
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -33,9 +33,9 @@ public class FallingCondition : MonoBehaviour
     private void OnTriggerExit2D(Collider2D collision)
     {
         numIslandCollisions--;
-        if (numIslandCollisions == 0 && (character.currentActionState == Character.ActionState.Free || character.currentActionState == Character.ActionState.Falling) )
+        if (numIslandCollisions == 0 && entity.CurrentStateAllowsFalling())
         {
-            playerShouldFall = true;
+            entityShouldFall = true;
         }
     }
 }

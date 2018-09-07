@@ -4,7 +4,7 @@ using UnityEngine;
 
 [RequireComponent (typeof(Rigidbody2D))]
 [RequireComponent (typeof(SpriteRenderer))]
-public class Enemy : MonoBehaviour
+public class Enemy : Entity
 {
     public enum ActionState
     {
@@ -262,5 +262,10 @@ public class Enemy : MonoBehaviour
             // TODO: Other Kind of removing?
             Destroy(gameObject);
         }
+    }
+
+    public override bool CurrentStateAllowsFalling()
+    {
+        return (currentActionState == ActionState.Idling || currentActionState == ActionState.Falling);
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(DistanceJoint2D))]
 [RequireComponent(typeof(SpriteRenderer))]
-public class Character : MonoBehaviour
+public class Character : Entity
 {
     public enum ActionState
     {
@@ -474,5 +474,10 @@ public class Character : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    public override bool CurrentStateAllowsFalling()
+    {
+        return (currentActionState == ActionState.Free || currentActionState == ActionState.Falling);
     }
 }
