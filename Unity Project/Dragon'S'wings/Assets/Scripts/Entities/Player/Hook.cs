@@ -59,7 +59,7 @@ public class Hook : MonoBehaviour
     private void InitRigidbody2D()
     {
         Rigidbody2D rigidbody2D = GetComponent<Rigidbody2D>();
-        rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
+    //    rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
     }
 
     private void InitLineRenderer()
@@ -83,7 +83,7 @@ public class Hook : MonoBehaviour
 
     private void Start()
     {
-        transform.parent = player.character.transform;
+        transform.parent = player.entity.transform;
     }
 
     private void FixedUpdate()
@@ -117,10 +117,10 @@ public class Hook : MonoBehaviour
             Vector2 anchorPosition = hit.point + ((Vector2)transform.position - hit.point).normalized * distanceThreshold;
             anchorPoints.Add(new AnchorPoint(anchorPosition, false));
             availableRopeLength = ((Vector2)transform.position - anchorPosition).magnitude;
-            player.character.distanceJoint2D.enabled = true;
-            player.character.distanceJoint2D.distance = availableRopeLength;
-            player.character.distanceJoint2D.connectedAnchor = GetLastAnchorPoint().position;
-            player.character.SetActionState(Character.ActionState.Hooked);
+            player.entity.distanceJoint2D.enabled = true;
+            player.entity.distanceJoint2D.distance = availableRopeLength;
+            player.entity.distanceJoint2D.connectedAnchor = GetLastAnchorPoint().position;
+            player.entity.SetActionState(Entity.ActionState.Hook);
         }
     }
 
@@ -192,8 +192,8 @@ public class Hook : MonoBehaviour
             anchorPoints.Add(new AnchorPoint(wrapPosition, anchorPoints[anchorPoints.Count - 1].position, Vector2.SignedAngle(hingeDir, playerDir) < 0.0f));
             currentRopeLength += anchorPoints[anchorPoints.Count - 1].ropeLength;
 
-            player.character.distanceJoint2D.distance = availableRopeLength - currentRopeLength;
-            player.character.distanceJoint2D.connectedAnchor = GetLastAnchorPoint().position;
+            player.entity.distanceJoint2D.distance = availableRopeLength - currentRopeLength;
+            player.entity.distanceJoint2D.connectedAnchor = GetLastAnchorPoint().position;
         }
     }
 
@@ -223,7 +223,7 @@ public class Hook : MonoBehaviour
     {
         anchorPoints.Clear();
         lineRenderer.positionCount = 0;
-        player.character.distanceJoint2D.enabled = false;
+        player.entity.distanceJoint2D.enabled = false;
         currentRopeLength = 0.0f;
     }
 
@@ -240,12 +240,12 @@ public class Hook : MonoBehaviour
         if (anchorPoints.Count > 0)
         {
             currentRopeLength -= lastAddedRopeLength;
-            player.character.distanceJoint2D.distance = availableRopeLength - currentRopeLength;
-            player.character.distanceJoint2D.connectedAnchor = GetLastAnchorPoint().position;
+            player.entity.distanceJoint2D.distance = availableRopeLength - currentRopeLength;
+            player.entity.distanceJoint2D.connectedAnchor = GetLastAnchorPoint().position;
         }
         else
         {
-            player.character.SetActionState(Character.ActionState.Falling);
+            player.entity.SetActionState(Entity.ActionState.Fall);
         }
     }
 }

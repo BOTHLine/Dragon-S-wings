@@ -152,18 +152,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 1712200570207640, guid: e69b6519d81ac1b4d814a514c999f57c, type: 2}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1579327275400870, guid: e69b6519d81ac1b4d814a514c999f57c, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1579327275400870, guid: e69b6519d81ac1b4d814a514c999f57c, type: 2}
-      propertyPath: m_Layer
-      value: 17
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e69b6519d81ac1b4d814a514c999f57c, type: 2}
   m_IsPrefabAsset: 0
@@ -439,6 +427,11 @@ Prefab:
       propertyPath: m_LocalScale.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 60797596259157058, guid: 9bf8696c56a3e5b4e983edd19d581a4e,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 68315049660662550, guid: 9bf8696c56a3e5b4e983edd19d581a4e, type: 2}
   m_SourcePrefab: {fileID: 100100000, guid: 9bf8696c56a3e5b4e983edd19d581a4e, type: 2}
@@ -621,7 +614,7 @@ PolygonCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}

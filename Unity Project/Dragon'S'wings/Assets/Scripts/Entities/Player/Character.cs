@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(DistanceJoint2D))]
 [RequireComponent(typeof(SpriteRenderer))]
-public class Character : Entity
+public class Character : MonoBehaviour
 {
     public enum ActionState
     {
@@ -23,7 +23,7 @@ public class Character : Entity
     public new Rigidbody2D rigidbody2D { get; private set; }
     public DistanceJoint2D distanceJoint2D { get; private set; }
     public SpriteRenderer spriteRenderer { get; private set; }
-    private BoxCollider2D boxCollider2D;
+    private new Collider2D collider2D;
 
     private Transform crosshair;
 
@@ -42,7 +42,7 @@ public class Character : Entity
     private Vector2 facingDirection = Vector2.down;
     private Vector2 dashingDirection = Vector2.zero;
     private Vector2 repositioningDirection = Vector2.zero;
-    private bool canDash = true;
+    public bool canDash = true;
     public float dashSpeed = 10.0f;
     private float dashTime;
     private float timeDashing;
@@ -68,8 +68,8 @@ public class Character : Entity
     public float repositioningTime;
     public float timeRepositioning;
     
-    private FallingCondition fallingCondition;
-    private FallingSave fallingSave;
+    private FallCondition fallingCondition;
+    private FallSave fallingSave;
 
     private TreeHighlighter currentHighlighted;
 
@@ -90,11 +90,11 @@ public class Character : Entity
         player = GetComponentInParent<Player>();
 
         spriteRenderer = GetComponent<SpriteRenderer>();
-        boxCollider2D = GetComponent<BoxCollider2D>();
+        collider2D = GetComponent<Collider2D>();
 
-        fallingCondition = GetComponentInChildren<FallingCondition>();
+        fallingCondition = GetComponentInChildren<FallCondition>();
 
-        fallingSave = transform.Find("FallingSave").GetComponent<FallingSave>();
+        fallingSave = transform.Find("FallingSave").GetComponent<FallSave>();
     }
 
     private void InitRigidBody2D()
@@ -215,7 +215,9 @@ public class Character : Entity
                 gameObject.layer = LayerList.PlayerDashing;
                 canDash = false;
                 timeDashing = 0.0f;
-                dashingDirection = aimingDirection.normalized;
+                Vector2 dashDirection = (Vector2)crosshair.transform.localPosition - collider2D.offset;
+                dashTime = dashDirection.magnitude / dashSpeed;
+                dashingDirection = dashDirection.normalized;
                 Trailer.AddTrailer(spriteRenderer, dashTime, 0.05f, 1.0f, 10.0f, 0.1f);
                 break;
             case ActionState.Swinging:
@@ -298,7 +300,9 @@ public class Character : Entity
     private void HandleDashInput()
     {
         if (canDash && Input.GetButtonDown(InputList.Dash))
+        {
             SetActionState(ActionState.Dashing);
+        }
     }
 
     private void HandleHookInput()
@@ -358,7 +362,7 @@ public class Character : Entity
 
     private void HandleFallingAction()
     {
-        if (fallingCondition.numIslandCollisions > 0)
+        if (!fallingCondition.EntityShouldFall())
         {
             SetActionState(ActionState.Free);
             return;
@@ -519,8 +523,10 @@ public class Character : Entity
         }
     }
 
+    /*
     public override bool CurrentStateAllowsFalling()
     {
         return (currentActionState == ActionState.Free || currentActionState == ActionState.Falling);
     }
+    */
 }

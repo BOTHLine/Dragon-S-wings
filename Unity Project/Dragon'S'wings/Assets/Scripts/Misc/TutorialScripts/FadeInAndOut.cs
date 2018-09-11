@@ -22,7 +22,6 @@ public class FadeInAndOut : MonoBehaviour
 
     void OnTriggerEnter2D()
     {
-        Debug.Log("Jup");
         if(!fadeIsActive) activateFading();
         else
         {

@@ -4,7 +4,7 @@ using UnityEngine;
 
 [RequireComponent (typeof(Rigidbody2D))]
 [RequireComponent (typeof(SpriteRenderer))]
-public class Enemy : Entity
+public class Enemy : MonoBehaviour
 {
     public enum ActionState
     {
@@ -50,7 +50,7 @@ public class Enemy : Entity
 
     public float pushedStopThresholdVelocity = 1.0f;
 
-    private FallingCondition fallingCondition;
+    private FallCondition fallCondition;
     public float fallTime = 0.1f;
     private float timeFalling = 0.0f;
 
@@ -70,7 +70,7 @@ public class Enemy : Entity
         attackRange = GetComponentInChildren<AttackRange>();
         hitArea = GetComponentInChildren<HitArea>();
 
-        fallingCondition = GetComponentInChildren<FallingCondition>();
+        fallCondition = GetComponentInChildren<FallCondition>();
     }
 
     private void InitRigidbody2D()
@@ -88,7 +88,7 @@ public class Enemy : Entity
 
     private void HandleActions()
     {
-        Vector2 vectorToPlayer = player.character.transform.position - transform.position;
+        Vector2 vectorToPlayer = player.entity.transform.position - transform.position;
         
         if (timeWaited < waitingTime)
             timeWaited += Time.fixedDeltaTime;
@@ -207,7 +207,7 @@ public class Enemy : Entity
 
     private void LookAtPlayer()
     {
-        Vector2 direction = player.character.transform.position - transform.position;
+        Vector2 direction = player.entity.transform.position - transform.position;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90.0f;
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
@@ -215,7 +215,7 @@ public class Enemy : Entity
     private void MoveTowardsPlayer()
     {
         LookAtPlayer();
-        rigidbody2D.AddForce((player.character.transform.position - transform.position).normalized * moveSpeed * rigidbody2D.drag);
+        rigidbody2D.AddForce((player.entity.transform.position - transform.position).normalized * moveSpeed * rigidbody2D.drag);
     }
 
     private void Attack()
@@ -250,7 +250,7 @@ public class Enemy : Entity
 
     private void HandleFallingAction()
     {
-        if (fallingCondition.numIslandCollisions > 0)
+        if (!fallCondition.EntityShouldFall())
         {
             SetActionState(ActionState.Idling);
             return;
@@ -263,9 +263,10 @@ public class Enemy : Entity
             Destroy(gameObject);
         }
     }
-
+    /*
     public override bool CurrentStateAllowsFalling()
     {
         return (currentActionState == ActionState.Idling || currentActionState == ActionState.Falling);
     }
+    */
 }

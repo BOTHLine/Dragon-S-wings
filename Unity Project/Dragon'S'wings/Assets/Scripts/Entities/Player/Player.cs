@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public Character character { get; private set; }
+    public EntityPlayer entity { get; private set; }
     public Hook hook { get; private set; }
 
     public int health;
 
     private void Awake()
     {
-        character = GetComponentInChildren<Character>();
+        entity = GetComponentInChildren<EntityPlayer>();
         hook = GetComponentInChildren<Hook>();
     }
 
