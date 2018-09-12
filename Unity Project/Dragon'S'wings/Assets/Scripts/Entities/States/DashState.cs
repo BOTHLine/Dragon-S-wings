@@ -13,7 +13,7 @@ public class DashState : EntityState
     public float maxDashRange = 2.0f;
     public float dashSpeed = 10.0f;
     public float dashTime;
-    public float timeDashing;
+    public float currentTimeDashing;
     public float dashForce = 5.0f;
 
     public override void UpdateInput()
@@ -71,7 +71,7 @@ public class DashState : EntityState
         entity.SetHigherLayer();
 
         canDash = false;
-        timeDashing = 0.0f;
+        currentTimeDashing = 0.0f;
 
         dashTime = crosshair.aimingVector.magnitude / dashSpeed;
         dashingDirection = crosshair.aimingVector.normalized;
@@ -82,8 +82,8 @@ public class DashState : EntityState
     {
         entity.rigidbody2D.velocity = dashingDirection * dashSpeed;
 
-        timeDashing += Time.fixedDeltaTime;
-        if (timeDashing >= dashTime)
+        currentTimeDashing += Time.fixedDeltaTime;
+        if (currentTimeDashing >= dashTime)
         {
             entity.rigidbody2D.velocity = Vector2.zero;
             entity.SetActionState(Entity.ActionState.Fall);

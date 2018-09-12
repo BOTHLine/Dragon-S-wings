@@ -8,7 +8,7 @@ public class FallState : EntityState
     public FallSave fallSave;
 
     public float fallTime = 0.5f;
-    public float timeFalling;
+    public float currentTimeFalling;
 
     public override void InitComponents()
     {
@@ -21,7 +21,7 @@ public class FallState : EntityState
         // TODO Player Reset Hook
         entity.SetHigherLayer();
         entity.rigidbody2D.velocity = Vector2.zero;
-        timeFalling = 0.0f;
+        currentTimeFalling = 0.0f;
     }
 
     public override void ExecuteAction()
@@ -32,8 +32,8 @@ public class FallState : EntityState
             return;
         }
 
-        timeFalling += Time.fixedDeltaTime;
-        if (timeFalling >= fallTime)
+        currentTimeFalling += Time.fixedDeltaTime;
+        if (currentTimeFalling >= fallTime)
         {
             entity.Fall();
         }

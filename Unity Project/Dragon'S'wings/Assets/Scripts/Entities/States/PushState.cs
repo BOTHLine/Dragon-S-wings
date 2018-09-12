@@ -7,19 +7,19 @@ public class PushState : EntityState
     public float pushSpeed;
     public Vector2 pushVector;
     public float pushTime;
-    public float timePushing;
+    public float currentTimePushing;
 
     public override void EnterState()
     {
-        throw new System.NotImplementedException();
+        currentTimePushing = 0.0f;
     }
 
     public override void ExecuteAction()
     {
         entity.rigidbody2D.velocity = pushVector.normalized * pushSpeed;
 
-        timePushing += Time.fixedDeltaTime;
-        if (timePushing >= pushTime)
+        currentTimePushing += Time.fixedDeltaTime;
+        if (currentTimePushing >= pushTime)
         {
             entity.rigidbody2D.velocity = Vector2.zero;
             entity.SetActionState(Entity.ActionState.Fall);
