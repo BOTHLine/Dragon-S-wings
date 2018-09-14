@@ -6,19 +6,16 @@ public class HookState : EntityState
 {
     public float maxRopeLength;
 
-    public override void InitComponents()
+    public override void EnterState(EntityStateParameter entityStateParameter)
     {
-    //    throw new System.NotImplementedException();
-    }
-
-    public override void EnterState()
-    {
-    //    throw new System.NotImplementedException();
+        HookStateParameter hookStateParameter = (HookStateParameter)entityStateParameter;
+        entity.SetNormalLayer();
     }
 
     public override void ExitState()
     {
-     //   throw new System.NotImplementedException();
+        MovementState movementState = (MovementState)entity.GetEntityState(Entity.ActionState.Movement);
+        movementState.lastSavePosition = entity.transform.position;
     }
 
     public override void ExecuteAction()
@@ -28,11 +25,21 @@ public class HookState : EntityState
 
     public override bool CheckInput()
     {
-        return (Input.GetButtonDown(InputList.Hook));
+        return Input.GetButtonDown(InputList.Hook);
     }
 
     public override Entity.ActionState GetOwnActionState()
     {
         return Entity.ActionState.Hook;
+    }
+
+    public override void InitOwnComponents()
+    {
+        // TODO
+    }
+
+    public override void InitOtherComponents()
+    {
+        // TODO
     }
 }

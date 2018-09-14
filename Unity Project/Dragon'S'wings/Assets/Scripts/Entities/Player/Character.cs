@@ -53,7 +53,6 @@ public class Character : MonoBehaviour
     public float pullSpeed = 5.0f;
     public float pullVelocity = 0.0f;
     public float pullMaxSpeed = 0.0f;
-    // public float maxPullSpeed = 100.0f;
     private float pullThreshold = 0.5f;
 
     public float swingSpeed = 10.0f;
@@ -72,6 +71,8 @@ public class Character : MonoBehaviour
     private FallSave fallingSave;
 
     private TreeHighlighter currentHighlighted;
+    
+    HookState hookState;
 
     private void Awake()
     {
@@ -95,6 +96,8 @@ public class Character : MonoBehaviour
         fallingCondition = GetComponentInChildren<FallCondition>();
 
         fallingSave = transform.Find("FallingSave").GetComponent<FallSave>();
+
+        hookState = GetComponent<HookState>();
     }
 
     private void InitRigidBody2D()
@@ -207,12 +210,12 @@ public class Character : MonoBehaviour
                 break;
             case ActionState.Falling:
                 player.hook.ResetAnchorPoints();
-                gameObject.layer = LayerList.PlayerFalling;
+                gameObject.layer = LayerList.EntityFallingCheck;
                 rigidbody2D.velocity = Vector2.zero;
                 fallingSave.gameObject.SetActive(true);
                 break;
             case ActionState.Dashing:
-                gameObject.layer = LayerList.PlayerDashing;
+                gameObject.layer = LayerList.PlayerHigher;
                 canDash = false;
                 timeDashing = 0.0f;
                 Vector2 dashDirection = (Vector2)crosshair.transform.localPosition - collider2D.offset;
@@ -221,13 +224,13 @@ public class Character : MonoBehaviour
                 Trailer.AddTrailer(spriteRenderer, dashTime, 0.05f, 1.0f, 10.0f, 0.1f);
                 break;
             case ActionState.Swinging:
-                gameObject.layer = LayerList.PlayerDashing;
+                gameObject.layer = LayerList.PlayerHigher;
                 break;
             case ActionState.Pulling:
-                gameObject.layer = LayerList.PlayerDashing;
+                gameObject.layer = LayerList.PlayerHigher;
                 break;
             case ActionState.Repositioning:
-                gameObject.layer = LayerList.PlayerDashing;
+                gameObject.layer = LayerList.PlayerHigher;
                 canDash = false;
                 timeRepositioning = 0.0f;
                 break;
@@ -248,7 +251,7 @@ public class Character : MonoBehaviour
         
         Vector3 crosshairPosition = (Vector3)aimingDirection.normalized * Mathf.Min(aimDirection.magnitude, aimRadius);
 
-        RaycastHit2D raycastHit2D = Physics2D.Raycast(transform.position, crosshair.localPosition, player.hook.maxRopeLength, player.hook.layerMask);
+        RaycastHit2D raycastHit2D = Physics2D.Raycast(transform.position, crosshair.localPosition, hookState.maxRopeLength, player.hook.layerMask);
         if (raycastHit2D.collider)
         {
             Debug.DrawLine(transform.position, raycastHit2D.point);
@@ -362,6 +365,7 @@ public class Character : MonoBehaviour
 
     private void HandleFallingAction()
     {
+        /*
         if (!fallingCondition.EntityShouldFall())
         {
             SetActionState(ActionState.Free);
@@ -373,6 +377,7 @@ public class Character : MonoBehaviour
         {
             Respawn();
         }
+        */
     }
 
     private void HandleDashAction()

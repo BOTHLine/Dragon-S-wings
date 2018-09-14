@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class HangState : EntityState
 {
-    public override void EnterState()
+    public override void EnterState(EntityStateParameter entityStateParameter)
     {
-        throw new System.NotImplementedException();
+        HangStateParameter hangStateParameter = (HangStateParameter)entityStateParameter;
     }
 
     public override void ExecuteAction()
@@ -24,8 +24,13 @@ public class HangState : EntityState
         return Entity.ActionState.Hang;
     }
 
-    public override void InitComponents()
+    public override void InitOtherComponents()
     {
-        throw new System.NotImplementedException();
+        // TODO
+    }
+
+    public override void InitOwnComponents()
+    {
+        // TODO
     }
 }

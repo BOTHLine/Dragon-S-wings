@@ -5,14 +5,14 @@ using UnityEngine;
 [RequireComponent(typeof(PolygonCollider2D))]
 public class Island : MonoBehaviour
 {
-    private static readonly float offset = 0.1f;
+    private static readonly float offset = 0.2f;
 
     private EdgeCollider2D edgeCollider2D;
-    private PolygonCollider2D polygonTrigger2D;
+    private PolygonCollider2D polygonCollider2D;
 
     private void Awake()
     {
-        gameObject.layer = LayerList.LevelTrigger;
+        gameObject.layer = LayerList.LevelFallingCheck;
 
         GameObject edgeColliderObject = new GameObject("EdgeColliderObject");
         edgeColliderObject.transform.parent = transform;
@@ -26,9 +26,8 @@ public class Island : MonoBehaviour
 
         CreateOuterEdgeCollider2D(originalPolygonCollider2D);
 
-        polygonTrigger2D = gameObject.AddComponent<PolygonCollider2D>();
-        polygonTrigger2D.isTrigger = true;
-        CreateInnerPolygonTrigger2D(originalPolygonCollider2D);
+        polygonCollider2D = gameObject.AddComponent<PolygonCollider2D>();
+        CreateInnerPolygonCollider2D(originalPolygonCollider2D);
 
         Destroy(originalPolygonCollider2D);
     }
@@ -44,7 +43,7 @@ public class Island : MonoBehaviour
         edgeCollider2D.points = points;
     }
 
-    private void CreateInnerPolygonTrigger2D(PolygonCollider2D originalPolygonCollider2D)
+    private void CreateInnerPolygonCollider2D(PolygonCollider2D originalPolygonCollider2D)
     {
         Vector2[] points = originalPolygonCollider2D.points;
 
@@ -59,14 +58,14 @@ public class Island : MonoBehaviour
             Vector2 directionVector = (lastVector.normalized + nextVector.normalized) / 2.0f;
 
             float angle = Vector2.SignedAngle(lastVector, nextVector);
-            if (angle < 0)
+            if (angle > 0)
             {
                 directionVector = -directionVector;
             }
 
             points[i] = originalPolygonCollider2D.points[i] + (directionVector.normalized * offset);
         }
-        polygonTrigger2D.points = points;
+        polygonCollider2D.points = points;
     }
 
     private Vector2 GetLastPoint(Vector2[] points, int index)

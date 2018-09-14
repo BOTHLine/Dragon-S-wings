@@ -19,6 +19,7 @@ public abstract class Entity : MonoBehaviour
     }
 
     public new Rigidbody2D rigidbody2D;
+    public CircleCollider2D circleCollider2D;
     public SpriteRenderer spriteRenderer;
 
     public ActionState currentActionState;
@@ -29,29 +30,40 @@ public abstract class Entity : MonoBehaviour
     private void Awake()
     {
         rigidbody2D = GetComponent<Rigidbody2D>();
+        circleCollider2D = GetComponent<CircleCollider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
 
-        InitComponents();
+        InitOwnComponents();
 
         EntityState[] states = GetComponents<EntityState>();
         foreach (EntityState state in states)
         {
             entityStates.Add(state.GetOwnActionState(), state);
-            state.InitComponents();
         }
-
-        SetActionState(ActionState.Movement);
     }
 
-    public abstract void InitComponents();
-
-    public void SetActionState(ActionState newActionState)
+    private void Start()
     {
+        InitOtherComponents();
+
+        SetActionState(ActionState.Movement, new MovementStateParameter());
+    }
+
+    public abstract void InitOwnComponents();
+    public abstract void InitOtherComponents();
+
+    public void SetActionState(ActionState newActionState, EntityStateParameter entityStateParameter)
+    {
+        if (currentEntityState)
+        {
+            currentEntityState.ExitState();
+        }
         currentEntityState = GetEntityState(newActionState);
         currentActionState = newActionState;
+        currentEntityState.EnterState(entityStateParameter);
     }
 
-    public abstract void Fall();
+    public abstract void Fall(); // TODO: Handle new State!!
 
     public abstract void SetNormalLayer();
     public abstract void SetHigherLayer();
@@ -63,12 +75,5 @@ public abstract class Entity : MonoBehaviour
         return returnValue;
     }
 
-    public void Push(float speed, Vector2 distanceVector)
-    {
-        PushState pushState = (PushState) GetEntityState(ActionState.Push);
-
-        pushState.pushSpeed = speed;
-        pushState.pushVector = distanceVector;
-        pushState.pushTime = pushState.pushVector.magnitude / pushState.pushSpeed;
-    }
+    public abstract Vector2 GetAimingVector();
 }

@@ -9,14 +9,24 @@ public class EntityEnemy : Entity
         Destroy(gameObject);
     }
 
-    public override void InitComponents()
+    public override Vector2 GetAimingVector()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void InitOtherComponents()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void InitOwnComponents()
     {
         throw new System.NotImplementedException();
     }
 
     public override void SetHigherLayer()
     {
-        gameObject.layer = LayerList.EnemyDashing;
+        gameObject.layer = LayerList.EnemyHigher;
     }
 
     public override void SetNormalLayer()

@@ -10,17 +10,23 @@ public abstract class EntityState : MonoBehaviour
     {
         entity = GetComponent<Entity>();
 
-        InitComponents();
+        InitOwnComponents();
     }
-    
-    public abstract void InitComponents();
+
+    private void Start()
+    {
+        InitOtherComponents();
+    }
+
+    public abstract void InitOwnComponents();
+    public abstract void InitOtherComponents();
 
     public virtual bool CheckInput()
     {
         return true;
     }
 
-    public abstract void EnterState();
+    public abstract void EnterState(EntityStateParameter entityStateParameter);
 
     public virtual void UpdateInput()
     {

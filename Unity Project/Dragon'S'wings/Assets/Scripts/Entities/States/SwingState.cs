@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class SwingState : EntityState
 {
-    public override void EnterState()
+    public override void EnterState(EntityStateParameter entityStateParameter)
     {
-        throw new System.NotImplementedException();
+        SwingStateParameter swingStateParameter = (SwingStateParameter)entityStateParameter;
+        entity.SetHigherLayer();
     }
 
     public override void ExecuteAction()
@@ -21,11 +22,16 @@ public class SwingState : EntityState
 
     public override Entity.ActionState GetOwnActionState()
     {
-        throw new System.NotImplementedException();
+        return Entity.ActionState.Swing;
     }
 
-    public override void InitComponents()
+    public override void InitOtherComponents()
     {
-        throw new System.NotImplementedException();
+        // TODO
+    }
+
+    public override void InitOwnComponents()
+    {
+        // TODO
     }
 }

@@ -6,32 +6,40 @@ using UnityEngine;
 [RequireComponent(typeof(CircleCollider2D))]
 public class FallCondition : MonoBehaviour
 {
-    public Character character;
+    FallState fallState;
 
-    public int numIslandCollisions = 0;
+    public CircleCollider2D circleCollider2D;
 
     private void Awake()
     {
-        character = GetComponentInParent<Character>();
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        numIslandCollisions++;
-    }
-
-    private void OnTriggerStay2D(Collider2D collision)
-    {
+        fallState = GetComponentInParent<FallState>();
         
+        circleCollider2D = GetComponent<CircleCollider2D>();
+        circleCollider2D.enabled = false;
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    private void Start()
     {
-        numIslandCollisions--;
+        transform.localPosition = GetComponentInParent<Entity>().circleCollider2D.offset;
     }
 
-    public bool EntityShouldFall()
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        return numIslandCollisions <= 0;
+        Debug.Log("Enter");
+        if (collision.gameObject.layer == LayerList.LevelFallingCheck)
+        {
+            Debug.Log("Triggered");
+            Vector2 closestContactPoint = collision.contacts[0].point;
+            foreach (ContactPoint2D contact in collision.contacts)
+            {
+                if (Vector2.Distance(transform.position, contact.point) < Vector2.Distance(transform.position, closestContactPoint))
+                {
+                    closestContactPoint = contact.point;
+                }
+            }
+            Vector2 collisionVector = closestContactPoint - (Vector2)transform.position;
+            fallState.SaveEntity(collisionVector);
+            circleCollider2D.enabled = false;
+        }
     }
 }

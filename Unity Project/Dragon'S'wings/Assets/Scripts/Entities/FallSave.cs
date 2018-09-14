@@ -32,7 +32,7 @@ public class FallSave : MonoBehaviour
             }
         }
         Vector2 vectorToCollision = closestContactPoint - (Vector2)entity.transform.position;
-        entity.Push(repositioningSpeed, vectorToCollision.normalized * (vectorToCollision.magnitude + 0.5f)); // Magic Number: Threshold to go over the edge collider itself
+        entity.SetActionState(Entity.ActionState.Push, new PushStateParameter(vectorToCollision.normalized * (vectorToCollision.magnitude + entity.circleCollider2D.radius), repositioningSpeed));
 
         Debug.Log("Entered");
     }
@@ -48,7 +48,7 @@ public class FallSave : MonoBehaviour
             }
         }
         Vector2 vectorToCollision = closestContactPoint - (Vector2)entity.transform.position;
-        entity.Push(repositioningSpeed, vectorToCollision.normalized * (vectorToCollision.magnitude + 0.5f)); // Magic Number: Threshold to go over the edge collider itself
+        entity.SetActionState(Entity.ActionState.Push, new PushStateParameter(vectorToCollision.normalized * (vectorToCollision.magnitude + entity.circleCollider2D.radius), repositioningSpeed));
 
         Debug.Log("Stayed");
     }

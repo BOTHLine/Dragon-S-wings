@@ -9,8 +9,11 @@ public class PushState : EntityState
     public float pushTime;
     public float currentTimePushing;
 
-    public override void EnterState()
+    public override void EnterState(EntityStateParameter entityStateParameter)
     {
+        PushStateParameter pushStateParameter = (PushStateParameter)entityStateParameter;
+        entity.SetHigherLayer();
+
         currentTimePushing = 0.0f;
     }
 
@@ -22,13 +25,13 @@ public class PushState : EntityState
         if (currentTimePushing >= pushTime)
         {
             entity.rigidbody2D.velocity = Vector2.zero;
-            entity.SetActionState(Entity.ActionState.Fall);
+            entity.SetActionState(Entity.ActionState.Fall, new FallStateParameter(entity.currentActionState));
         }
     }
 
     public override void ExitState()
     {
-        throw new System.NotImplementedException();
+        // Empty
     }
 
     public override Entity.ActionState GetOwnActionState()
@@ -41,8 +44,13 @@ public class PushState : EntityState
         throw new System.NotImplementedException();
     }
 
-    public override void InitComponents()
+    public override void InitOwnComponents()
     {
-        throw new System.NotImplementedException();
+        // TODO
+    }
+
+    public override void InitOtherComponents()
+    {
+        // TODO
     }
 }

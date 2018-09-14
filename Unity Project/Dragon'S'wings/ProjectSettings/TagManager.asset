@@ -14,16 +14,16 @@ TagManager:
   - 
   - 
   - Player
-  - PlayerFalling
-  - PlayerDashing
-  - LevelTrigger
-  - Obstacle
+  - PlayerHigher
   - Enemy
-  - EnemyDashing
-  - EnemyFalling
-  - Hook
-  - PlayerFallingCheck
+  - EnemyHigher
+  - EntityFallingCheck
+  - LevelFallingCheck
   - LevelEdge
+  - Obstacle
+  - Hook
+  - 
+  - 
   - 
   - 
   - 

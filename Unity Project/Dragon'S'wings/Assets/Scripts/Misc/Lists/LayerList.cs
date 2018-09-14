@@ -5,14 +5,12 @@ using UnityEngine;
 public class LayerList
 {
     public static readonly int Player = LayerMask.NameToLayer("Player");
-    public static readonly int PlayerFalling = LayerMask.NameToLayer("PlayerFalling");
-    public static readonly int PlayerDashing = LayerMask.NameToLayer("PlayerDashing");
-    public static readonly int LevelTrigger = LayerMask.NameToLayer("LevelTrigger");
+    public static readonly int PlayerHigher = LayerMask.NameToLayer("PlayerHigher");
+    public static readonly int Enemy = LayerMask.NameToLayer("Enemy");
+    public static readonly int EnemyHigher = LayerMask.NameToLayer("EnemyHigher");
+    public static readonly int EntityFallingCheck = LayerMask.NameToLayer("EntityFallingCheck");
+    public static readonly int LevelFallingCheck = LayerMask.NameToLayer("LevelFallingCheck");
+    public static readonly int LevelEdge = LayerMask.NameToLayer("LevelEdge");
     public static readonly int Obstacle = LayerMask.NameToLayer("Obstacle");
     public static readonly int Hook = LayerMask.NameToLayer("Hook");
-    public static readonly int Enemy = LayerMask.NameToLayer("Enemy");
-    public static readonly int EnemyDashing = LayerMask.NameToLayer("EnemyDashing");
-    public static readonly int EnemyFalling = LayerMask.NameToLayer("EnemyFalling");
-    public static readonly int PlayerFallingCheck = LayerMask.NameToLayer("PlayerFallingCheck");
-    public static readonly int LevelEdge = LayerMask.NameToLayer("LevelEdge");
 }

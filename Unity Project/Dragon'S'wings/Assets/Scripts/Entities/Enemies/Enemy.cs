@@ -49,8 +49,7 @@ public class Enemy : MonoBehaviour
     public int damage;
 
     public float pushedStopThresholdVelocity = 1.0f;
-
-    private FallCondition fallCondition;
+    
     public float fallTime = 0.1f;
     private float timeFalling = 0.0f;
 
@@ -69,8 +68,6 @@ public class Enemy : MonoBehaviour
 
         attackRange = GetComponentInChildren<AttackRange>();
         hitArea = GetComponentInChildren<HitArea>();
-
-        fallCondition = GetComponentInChildren<FallCondition>();
     }
 
     private void InitRigidbody2D()
@@ -195,10 +192,10 @@ public class Enemy : MonoBehaviour
                 timeStaggered = 0.0f;
                 break;
             case ActionState.Pushed:
-                gameObject.layer = LayerList.EnemyDashing;
+                gameObject.layer = LayerList.EnemyHigher;
                 break;
             case ActionState.Falling:
-                gameObject.layer = LayerList.EnemyFalling;
+                gameObject.layer = LayerList.EntityFallingCheck;
                 break;
         }
 
@@ -250,6 +247,7 @@ public class Enemy : MonoBehaviour
 
     private void HandleFallingAction()
     {
+        /*
         if (!fallCondition.EntityShouldFall())
         {
             SetActionState(ActionState.Idling);
@@ -262,6 +260,7 @@ public class Enemy : MonoBehaviour
             // TODO: Other Kind of removing?
             Destroy(gameObject);
         }
+        */
     }
     /*
     public override bool CurrentStateAllowsFalling()
