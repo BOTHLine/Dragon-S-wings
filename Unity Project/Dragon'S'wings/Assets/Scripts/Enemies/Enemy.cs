@@ -16,8 +16,10 @@ public class Enemy : Entity
         Pushed,
         Falling
     }
-
-    private Blinker blinker;
+    public Sprite topSprite;
+    public Sprite rightSprite;
+    public Sprite downSprite;
+    public Sprite leftSprite;
 
     private AttackRange attackRange;
     private HitArea hitArea;
@@ -125,7 +127,7 @@ public class Enemy : Entity
                     }
                     else
                     {
-                        LookAtPlayer();
+                     //   LookAtPlayer();
                         if (timeWaited >= waitingTime)
                             SetActionState(ActionState.Attacking);
                     }
@@ -214,8 +216,9 @@ public class Enemy : Entity
 
     private void MoveTowardsPlayer()
     {
-        LookAtPlayer();
+    //    LookAtPlayer();
         rigidbody2D.AddForce((player.character.transform.position - transform.position).normalized * moveSpeed * rigidbody2D.drag);
+        UpdateSprite();
     }
 
     private void Attack()
@@ -267,5 +270,16 @@ public class Enemy : Entity
     public override bool CurrentStateAllowsFalling()
     {
         return (currentActionState == ActionState.Idling || currentActionState == ActionState.Falling);
+    }
+
+    private void UpdateSprite()
+    {
+        if (Mathf.Abs(rigidbody2D.velocity.x) > Mathf.Abs(rigidbody2D.velocity.y))
+        {
+            spriteRender.sprite = rigidbody2D.velocity.x > 0 ? rightSprite : leftSprite;
+        } else if (Mathf.Abs(rigidbody2D.velocity.x) < Mathf.Abs(rigidbody2D.velocity.y))
+        {
+            spriteRender.sprite = rigidbody2D.velocity.y > 0 ? topSprite : leftSprite;
+        }
     }
 }
