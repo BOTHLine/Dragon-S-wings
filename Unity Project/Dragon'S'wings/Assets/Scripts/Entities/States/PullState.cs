@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PullState : EntityState
 {
+    public PullStateParameter parameter;
+
     public float pullSpeed = 5.0f;
     public float pullVelocity = 0.0f;
 
@@ -13,9 +15,13 @@ public class PullState : EntityState
     public Hook hook;
     public DistanceJoint2D distanceJoint2D;
 
+    public PullState(Entity entity) : base(entity)
+    {
+    }
+
     public override void EnterState(EntityStateParameter entityStateParameter)
     {
-        PullStateParameter pullStateParameter = (PullStateParameter)entityStateParameter;
+        parameter = (PullStateParameter)entityStateParameter;
         entity.SetHigherLayer();
         CalculateNextPullTarget();
     }
@@ -27,7 +33,7 @@ public class PullState : EntityState
         {
             CalculateNextPullTarget();
         }
-        Debug.DrawLine(transform.position, pullTarget);
+        Debug.DrawLine(entity.transform.position, pullTarget);
 
         if (hook.anchorPoints.Count == 1 && Mathf.Abs((distanceJoint2D.connectedAnchor - (Vector2)entity.transform.position).sqrMagnitude - entity.circleCollider2D.radius * entity.circleCollider2D.radius) <= 0.1f)
         {
@@ -35,7 +41,7 @@ public class PullState : EntityState
             return;
         }
 
-        Vector2 pullVector = pullTarget - (Vector2)transform.position;
+        Vector2 pullVector = pullTarget - (Vector2)entity.transform.position;
         Vector2 pullDirection = pullVector.normalized;
         if (pullVelocity == 0.0f)
         {
@@ -74,7 +80,7 @@ public class PullState : EntityState
 
     public override void InitOwnComponents()
     {
-        hook = FindObjectOfType<Hook>();
+        hook = Object.FindObjectOfType<Hook>();
     }
 
     public override void InitOtherComponents()

@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class FallState : EntityState
 {
+    public FallStateParameter parameter;
+
+    public EntityStateParameter targetEntityStateParameter;
+
     public DashState dashState;
     public CircleCollider2D circleCollider2D;
 
@@ -11,12 +15,14 @@ public class FallState : EntityState
     public float currentTimeFalling;
     public bool isFalling;
 
-    public Entity.ActionState targetActionState;
+    public FallState(Entity entity) : base(entity)
+    {
+    }
 
     public override void EnterState(EntityStateParameter entityStateParameter)
     {
-        FallStateParameter fallStateParameter = (FallStateParameter)entityStateParameter;
-        targetActionState = fallStateParameter.targetActionState;
+        parameter = (FallStateParameter)entityStateParameter;
+        targetEntityStateParameter = parameter.targetEntityStateParameter;
 
         // TODO Player Reset Hook
         entity.SetNormalLayer();
@@ -31,10 +37,10 @@ public class FallState : EntityState
     {
         if (!isFalling)
         {
-            entity.SetActionState(targetActionState, null);
+            entity.SetActionState(targetEntityStateParameter);
             return;
         }
-        if ( !dashState || !dashState.canDash || currentTimeFalling >= fallTime)
+        if ( dashState == null || !dashState.canDash || currentTimeFalling >= fallTime)
         {
             entity.Fall();
             currentTimeFalling += Time.fixedDeltaTime;

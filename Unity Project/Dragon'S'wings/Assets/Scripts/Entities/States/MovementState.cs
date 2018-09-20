@@ -4,14 +4,20 @@ using UnityEngine;
 
 public class MovementState : EntityState
 {
+    public MovementStateParameter parameter;
+
     public Vector2 movingDirection = Vector2.zero;
     public float movementSpeed = 5.0f;
 
     public Vector2 lastSavePosition;
 
+    public MovementState(Entity entity) : base(entity)
+    {
+    }
+
     public override void EnterState(EntityStateParameter entityStateParameter)
     {
-        MovementStateParameter movementStateParameter = (MovementStateParameter)entityStateParameter;
+        parameter = (MovementStateParameter)entityStateParameter;
         entity.SetNormalLayer();
 
         DashState dashState = (DashState) entity.GetEntityState(Entity.ActionState.Dash);

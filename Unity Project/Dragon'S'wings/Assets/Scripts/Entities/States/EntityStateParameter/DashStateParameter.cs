@@ -10,4 +10,9 @@ public class DashStateParameter : EntityStateParameter
     {
         this.dashTarget = dashTarget;
     }
+
+    public override Entity.ActionState GetActionState()
+    {
+        return Entity.ActionState.Dash;
+    }
 }

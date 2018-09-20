@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class DashState : EntityState
 {
+    public DashStateParameter parameter;
+
     public Crosshair crosshair;
 
     public Collider2D[] tempColliders2D;
@@ -20,6 +22,11 @@ public class DashState : EntityState
 
     public float correctionRadius = 0.5f;
 
+    public DashState(Entity entity) : base(entity)
+    {
+
+    }
+
     public override void UpdateInput()
     {
         
@@ -27,7 +34,7 @@ public class DashState : EntityState
 
     public override void EnterState(EntityStateParameter entityStateParameter)
     {
-        DashStateParameter dashStateParameter = (DashStateParameter)entityStateParameter;
+        parameter = (DashStateParameter)entityStateParameter;
 
         entity.SetHigherLayer();
 
@@ -56,19 +63,19 @@ public class DashState : EntityState
         }
 
 
-        dashTime = Vector2.Distance(transform.position, dashTarget) / dashSpeed;
+        dashTime = Vector2.Distance(entity.transform.position, dashTarget) / dashSpeed;
         Trailer.AddTrailer(entity.spriteRenderer, dashTime, 0.05f, 1.0f, 10.0f, 0.1f);
     }
 
     public override void ExecuteAction()
     {
         // entity.rigidbody2D.velocity = dashingDirection * dashSpeed;
-        entity.rigidbody2D.MovePosition(Vector2.Lerp(transform.position, dashTarget, dashSpeed * Time.deltaTime));
+        entity.rigidbody2D.MovePosition(Vector2.Lerp(entity.transform.position, dashTarget, dashSpeed * Time.deltaTime));
 
-        distSqr = (dashTarget - (Vector2)transform.position).sqrMagnitude;
+        distSqr = (dashTarget - (Vector2)entity.transform.position).sqrMagnitude;
         if (distSqr < 0.00001f)
         {
-            entity.SetActionState(Entity.ActionState.Fall, new FallStateParameter(Entity.ActionState.Movement));
+            entity.SetActionState(new FallStateParameter(new HookStateParameter()));
         }
     }
 
@@ -89,7 +96,7 @@ public class DashState : EntityState
 
     public override void InitOwnComponents()
     {
-        crosshair = GetComponentInChildren<Crosshair>();
+        crosshair = entity.GetComponentInChildren<Crosshair>();
     }
 
     public override void InitOtherComponents()

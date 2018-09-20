@@ -4,9 +4,15 @@ using UnityEngine;
 
 public class HangState : EntityState
 {
+    public HangStateParameter parameter;
+
+    public HangState(Entity entity) : base(entity)
+    {
+    }
+
     public override void EnterState(EntityStateParameter entityStateParameter)
     {
-        HangStateParameter hangStateParameter = (HangStateParameter)entityStateParameter;
+        parameter = (HangStateParameter)entityStateParameter;
     }
 
     public override void ExecuteAction()

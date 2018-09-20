@@ -8,14 +8,15 @@ public abstract class Entity : MonoBehaviour
 {
     public enum ActionState
     {
-        Dash,
-        Fall,
-        Hang,
-        Hook,
-        Movement,
-        Pull,
-        Push,
-        Swing
+        None = (1 << 0),
+        Dash = (1 << 1),
+        Fall = (1 << 2),
+        Hang = (1 << 3),
+        Hook = (1 << 4),
+        Movement = (1 << 5),
+        Pull = (1 << 6),
+        Push = (1 << 7),
+        Swing = (1 << 8),
     }
 
     public new Rigidbody2D rigidbody2D;
@@ -46,18 +47,19 @@ public abstract class Entity : MonoBehaviour
     {
         InitOtherComponents();
 
-        SetActionState(ActionState.Movement, new MovementStateParameter());
+        SetActionState(new MovementStateParameter());
     }
 
     public abstract void InitOwnComponents();
     public abstract void InitOtherComponents();
 
-    public void SetActionState(ActionState newActionState, EntityStateParameter entityStateParameter)
+    public void SetActionState(EntityStateParameter entityStateParameter)
     {
-        if (currentEntityState)
+        if (currentEntityState != null)
         {
             currentEntityState.ExitState();
         }
+        ActionState newActionState = entityStateParameter.GetActionState();
         currentEntityState = GetEntityState(newActionState);
         currentActionState = newActionState;
         currentEntityState.EnterState(entityStateParameter);

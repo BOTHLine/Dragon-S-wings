@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eef6133ee849c39488ba3e913e769684, type: 3}
+  m_Name: playerGeneralData
+  m_EditorClassIdentifier: 
+  isPlayer: 1
+  entityMovementSettings: {fileID: 11400000, guid: cb0d0a424747f87499ac74cd45cc6f5c,
+    type: 2}
+  entityDashSettings: {fileID: 11400000, guid: e1b3d1617ba3aaa4186953954f8e2e95, type: 2}

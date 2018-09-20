@@ -4,14 +4,20 @@ using UnityEngine;
 
 public class PushState : EntityState
 {
+    PushStateParameter parameter;
+
     public float pushSpeed;
     public Vector2 pushVector;
     public float pushTime;
     public float currentTimePushing;
 
+    public PushState(Entity entity) : base(entity)
+    {
+    }
+
     public override void EnterState(EntityStateParameter entityStateParameter)
     {
-        PushStateParameter pushStateParameter = (PushStateParameter)entityStateParameter;
+        parameter = (PushStateParameter)entityStateParameter;
         entity.SetHigherLayer();
 
         currentTimePushing = 0.0f;
@@ -25,7 +31,7 @@ public class PushState : EntityState
         if (currentTimePushing >= pushTime)
         {
             entity.rigidbody2D.velocity = Vector2.zero;
-            entity.SetActionState(Entity.ActionState.Fall, new FallStateParameter(entity.currentActionState));
+            entity.SetActionState(new FallStateParameter(parameter.targetEntityStateParameter));
         }
     }
 

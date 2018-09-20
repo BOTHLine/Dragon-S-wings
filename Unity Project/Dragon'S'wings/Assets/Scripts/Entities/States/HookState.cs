@@ -4,11 +4,17 @@ using UnityEngine;
 
 public class HookState : EntityState
 {
+    public HookStateParameter parameter;
+
     public float maxRopeLength;
+
+    public HookState(Entity entity) : base(entity)
+    {
+    }
 
     public override void EnterState(EntityStateParameter entityStateParameter)
     {
-        HookStateParameter hookStateParameter = (HookStateParameter)entityStateParameter;
+        parameter = (HookStateParameter)entityStateParameter;
         entity.SetNormalLayer();
     }
 

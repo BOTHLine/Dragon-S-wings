@@ -4,5 +4,5 @@ using UnityEngine;
 
 public abstract class EntityStateParameter
 {
-    
+    public abstract Entity.ActionState GetActionState();
 }

@@ -3,23 +3,33 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CircleCollider2D))]
-[RequireComponent(typeof(SwingState))]
-[RequireComponent(typeof(HangState))]
-[RequireComponent(typeof(PullState))]
-[RequireComponent(typeof(HookState))]
-[RequireComponent(typeof(FallState))]
-[RequireComponent(typeof(PushState))]
-[RequireComponent(typeof(DashState))]
-[RequireComponent(typeof(MovementState))]
 public class PlayerEntity : Entity
 {
+    [System.Serializable]
+    public struct Pull
+    {
+
+        public float pullSpeed;
+        public float pullVelocity;
+        public float pullMaxSpeed;
+        public float pullForce;
+    }
+
     public Hook hook;
     public Crosshair crosshair;
+
+    public Pull pull;
+
+    [Header("Swing")]
+    public float swingSpeed;
+    public float swingVelocity;
+    public float swingMaxSpeed;
+    public float swingForce;
 
     private void Update()
     {
         crosshair.UpdateInput();
-        EntityState movementState = GetEntityState(ActionState.Movement);
+        MovementState movementState = (MovementState) GetEntityState(ActionState.Movement);
         movementState.UpdateInput();
         switch (currentActionState)
         {
@@ -28,7 +38,7 @@ public class PlayerEntity : Entity
             case ActionState.Movement:
                 if (GetEntityState(ActionState.Dash).CheckInput())
                 {
-                    SetActionState(ActionState.Dash, new DashStateParameter(Vector2.zero)); // TODO: Get Position from Crosshair here instead of getting it inside the DashState
+                    SetActionState(new DashStateParameter(Vector2.zero)); // TODO: Get Position from Crosshair here instead of getting it inside the DashState
                     break;
                 }
                 if (GetEntityState(ActionState.Hook).CheckInput())
@@ -39,7 +49,7 @@ public class PlayerEntity : Entity
             case ActionState.Fall:
                 if (GetEntityState(ActionState.Dash).CheckInput())
                 {
-                    SetActionState(ActionState.Dash, new DashStateParameter(Vector2.zero)); // TODO: Get Position from Crosshair here instead of getting it inside the DashState
+                    SetActionState(new DashStateParameter(Vector2.zero)); // TODO: Get Position from Crosshair here instead of getting it inside the DashState
                 }
                 break;
             case ActionState.Hook:
@@ -50,12 +60,41 @@ public class PlayerEntity : Entity
                 }
                 if (GetEntityState(ActionState.Pull).CheckInput())
                 {
-                    SetActionState(ActionState.Pull, new PullStateParameter());
+                    SetActionState(new PullStateParameter());
                     break;
                 }
                 if (GetEntityState(ActionState.Swing).CheckInput())
                 {
-
+                    Vector2 swingRelativePosition = (Vector2)transform.position - hook.distanceJoint2D.connectedAnchor;
+                    SwingState swingState = (SwingState) GetEntityState(ActionState.Swing);
+                    SwingStateParameter swingStateParameter = new SwingStateParameter(swingSpeed, swingVelocity, swingMaxSpeed, true);
+                    if (Mathf.Abs(movementState.movingDirection.x) > Mathf.Abs(movementState.movingDirection.y))
+                    {
+                        if (Mathf.Abs(movementState.movingDirection.x) > Mathf.Abs(movementState.movingDirection.y))
+                        {
+                            if (swingRelativePosition.y != 0)
+                            {
+                                swingStateParameter.swingClockwise = (swingRelativePosition.y > 0 && movementState.movingDirection.x > 0) || (swingRelativePosition.y < 0 && movementState.movingDirection.x < 0);
+                            }
+                            else
+                            {
+                                swingStateParameter.swingClockwise = (swingRelativePosition.x > 0 && movementState.movingDirection.y < 0) || (swingRelativePosition.x < 0 && movementState.movingDirection.y > 0);
+                            }
+                            SetActionState(swingStateParameter);
+                        }
+                        else if (Mathf.Abs(movementState.movingDirection.y) > Mathf.Abs(movementState.movingDirection.x))
+                        {
+                            if (swingRelativePosition.x != 0)
+                            {
+                                swingStateParameter.swingClockwise = (swingRelativePosition.x > 0 && movementState.movingDirection.y < 0) || (swingRelativePosition.x < 0 && movementState.movingDirection.y > 0);
+                            }
+                            else
+                            {
+                                swingStateParameter.swingClockwise = (swingRelativePosition.y > 0 && movementState.movingDirection.x > 0) || (swingRelativePosition.y < 0 && movementState.movingDirection.x < 0);
+                            }
+                            SetActionState(swingStateParameter);
+                        }
+                    }
                 }
                 break;
             case ActionState.Pull:
@@ -66,7 +105,7 @@ public class PlayerEntity : Entity
                 }
                 if (GetEntityState(ActionState.Hook).CheckInput())
                 {
-                    SetActionState(ActionState.Fall, new FallStateParameter(ActionState.Hook));
+                    SetActionState(new FallStateParameter(new HookStateParameter()));
                 }
                 break;
             case ActionState.Swing:
@@ -109,7 +148,7 @@ public class PlayerEntity : Entity
         MovementState movementState = (MovementState)GetEntityState(ActionState.Movement);
         transform.position = movementState.lastSavePosition;
 
-        SetActionState(ActionState.Movement, new MovementStateParameter());
+        SetActionState(new MovementStateParameter());
     }
 
     public override void SetHigherLayer()

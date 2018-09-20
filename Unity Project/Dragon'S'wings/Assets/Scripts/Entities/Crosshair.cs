@@ -9,6 +9,7 @@ public class Crosshair : MonoBehaviour
     public CircleCollider2D circleCollider2D;
     public SpriteRenderer spriteRenderer;
 
+    public PlayerEntity playerEntity;
     public DashState dashState;
     public HookState hookState;
 
@@ -28,8 +29,9 @@ public class Crosshair : MonoBehaviour
         circleCollider2D = GetComponent<CircleCollider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
 
-        dashState = GetComponentInParent<DashState>();
-        hookState = GetComponentInParent<HookState>();
+        playerEntity = GetComponentInParent<PlayerEntity>();
+        dashState = playerEntity.GetEntityState(Entity.ActionState.Dash) as DashState;
+        hookState = playerEntity.GetEntityState(Entity.ActionState.Hook) as HookState;
 
         hook = FindObjectOfType<Hook>();
     }

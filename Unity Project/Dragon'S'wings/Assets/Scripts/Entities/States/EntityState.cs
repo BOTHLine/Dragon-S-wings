@@ -2,20 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class EntityState : MonoBehaviour
+public abstract class EntityState
 {
     public Entity entity;
 
-    private void Awake()
+    public EntityState(Entity entity)
     {
-        entity = GetComponent<Entity>();
+        this.entity = entity;
 
         InitOwnComponents();
-    }
-
-    private void Start()
-    {
-        InitOtherComponents();
     }
 
     public abstract void InitOwnComponents();

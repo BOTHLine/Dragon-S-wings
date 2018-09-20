@@ -109,7 +109,7 @@ public class Hook : MonoBehaviour
             distanceJoint2D.enabled = true;
             distanceJoint2D.distance = availableRopeLength;
             distanceJoint2D.connectedAnchor = GetLastAnchorPoint().position;
-            entity.SetActionState(Entity.ActionState.Hook, new HookStateParameter());
+            entity.SetActionState(new HookStateParameter());
         }
     }
 
@@ -213,7 +213,7 @@ public class Hook : MonoBehaviour
         lineRenderer.positionCount = 0;
         distanceJoint2D.enabled = false;
         currentRopeLength = 0.0f;
-        entity.SetActionState(Entity.ActionState.Fall, new FallStateParameter(Entity.ActionState.Movement));
+        entity.SetActionState(new FallStateParameter(new MovementStateParameter()));
     }
 
     public AnchorPoint GetLastAnchorPoint()

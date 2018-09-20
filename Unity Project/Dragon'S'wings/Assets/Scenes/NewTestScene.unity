@@ -365,8 +365,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   circleCollider2D: {fileID: 0}
   spriteRenderer: {fileID: 0}
-  dashState: {fileID: 0}
-  hookState: {fileID: 0}
+  playerEntity: {fileID: 0}
   hook: {fileID: 0}
   currentHighlighted: {fileID: 0}
 --- !u!212 &121387388
@@ -497,14 +496,6 @@ GameObject:
   m_Component:
   - component: {fileID: 575905170}
   - component: {fileID: 575905183}
-  - component: {fileID: 575905181}
-  - component: {fileID: 575905180}
-  - component: {fileID: 575905179}
-  - component: {fileID: 575905178}
-  - component: {fileID: 575905177}
-  - component: {fileID: 575905176}
-  - component: {fileID: 575905175}
-  - component: {fileID: 575905174}
   - component: {fileID: 575905173}
   - component: {fileID: 575905172}
   - component: {fileID: 575905171}
@@ -562,9 +553,17 @@ MonoBehaviour:
   circleCollider2D: {fileID: 0}
   spriteRenderer: {fileID: 0}
   currentActionState: 0
-  currentEntityState: {fileID: 0}
   hook: {fileID: 0}
   crosshair: {fileID: 0}
+  pull:
+    pullSpeed: 0
+    pullVelocity: 0
+    pullMaxSpeed: 0
+    pullForce: 0
+  swingSpeed: 0
+  swingVelocity: 0
+  swingMaxSpeed: 0
+  swingForce: 0
 --- !u!212 &575905173
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -611,135 +610,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &575905174
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 575905169}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5814b5b9dfc8cde46acb77e237e308e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  entity: {fileID: 0}
-  movingDirection: {x: 0, y: 0}
-  movementSpeed: 5
-  lastSavePosition: {x: 0, y: 0}
---- !u!114 &575905175
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 575905169}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c26c1a46c38d55449db291bb003fe67, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  entity: {fileID: 0}
-  crosshair: {fileID: 0}
-  tempColliders2D: []
-  canDash: 1
-  dashTarget: {x: 0, y: 0}
-  distSqr: 0
-  maxDashRange: 2
-  dashSpeed: 10
-  dashTime: 0
-  dashForce: 5
-  correctionRadius: 1
---- !u!114 &575905176
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 575905169}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 99c73d754890d484b928897dc58727b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  entity: {fileID: 0}
-  maxRopeLength: 10
---- !u!114 &575905177
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 575905169}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 341a61f7c83cb4c4b9e3a6daead8d28f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  entity: {fileID: 0}
-  dashState: {fileID: 0}
-  circleCollider2D: {fileID: 0}
-  fallTime: 0.5
-  currentTimeFalling: 0
-  isFalling: 0
-  targetActionState: 0
---- !u!114 &575905178
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 575905169}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a22161edae1832a45b6102a46d1943f2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  entity: {fileID: 0}
-  pushSpeed: 0
-  pushVector: {x: 0, y: 0}
-  pushTime: 0
-  currentTimePushing: 0
---- !u!114 &575905179
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 575905169}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2b81fb32239aea44990a5fa60a136da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  entity: {fileID: 0}
---- !u!114 &575905180
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 575905169}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e1380ebd5e8aea48993d4d2b1fd1b62, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  entity: {fileID: 0}
-  pullSpeed: 5
-  pullVelocity: 0
-  currentTargetAnchorPoint:
-    position: {x: 0, y: 0}
-    ropeLength: 0
-    angle: 0
-  pullTarget: {x: 0, y: 0}
-  hook: {fileID: 0}
-  distanceJoint2D: {fileID: 0}
---- !u!114 &575905181
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 575905169}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0605885a2f7040b4b8ac6c746069c40f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  entity: {fileID: 0}
 --- !u!50 &575905183
 Rigidbody2D:
   serializedVersion: 4
@@ -881,7 +751,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   entity: {fileID: 0}
-  hookState: {fileID: 0}
   distanceJoint2D: {fileID: 0}
   lineRenderer: {fileID: 0}
   anchorPoints: []
@@ -1136,6 +1005,48 @@ Transform:
   - {fileID: 65527448}
   m_Father: {fileID: 0}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1706000423
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1706000425}
+  - component: {fileID: 1706000424}
+  m_Layer: 0
+  m_Name: TestObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1706000424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1706000423}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e282c0092105d6442a9afd3c150832f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movementFlag: 0
+  movementSpeed: 0
+--- !u!4 &1706000425
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1706000423}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1864112371
 GameObject:
