@@ -5,55 +5,68 @@ using UnityEngine;
 [RequireComponent(typeof(PolygonCollider2D))]
 public class Island : MonoBehaviour
 {
-    public float offset = 0.1f;
+    private static readonly float offset = 0.1f;
 
-    private PolygonCollider2D polygonCollider;
-    private EdgeCollider2D edgeCollider;
+    private EdgeCollider2D edgeCollider2D;
+    private PolygonCollider2D polygonTrigger2D;
 
     private void Awake()
     {
-        GameObject edgeColliderObject = new GameObject();
+        gameObject.layer = LayerList.LevelTrigger;
+
+        GameObject edgeColliderObject = new GameObject("EdgeColliderObject");
         edgeColliderObject.transform.parent = transform;
         edgeColliderObject.layer = LayerList.LevelEdge;
+        edgeColliderObject.transform.localPosition = Vector3.zero;
+        edgeColliderObject.transform.localScale = Vector3.one;
 
-        polygonCollider = GetComponent<PolygonCollider2D>();
-        edgeCollider = edgeColliderObject.AddComponent<EdgeCollider2D>();
+        PolygonCollider2D originalPolygonCollider2D = GetComponent<PolygonCollider2D>();
 
-        Vector2[] points = new Vector2[polygonCollider.points.Length + 1];
-        for (int i = 0; i < polygonCollider.points.Length; i++)
-        {
-            points[i] = polygonCollider.points[i];
-        }
-        points[points.Length - 1] = points[0];
-        edgeCollider.points = points;
+        edgeCollider2D = edgeColliderObject.AddComponent<EdgeCollider2D>();
+
+        CreateOuterEdgeCollider2D(originalPolygonCollider2D);
+
+        polygonTrigger2D = gameObject.AddComponent<PolygonCollider2D>();
+        polygonTrigger2D.isTrigger = true;
+        CreateInnerPolygonTrigger2D(originalPolygonCollider2D);
+
+        Destroy(originalPolygonCollider2D);
     }
 
-    private void CalculateInnerPolygonCollider2D()
+    private void CreateOuterEdgeCollider2D(PolygonCollider2D originalPolygonCollider2D)
     {
-        PolygonCollider2D firstCollider = GetComponent<PolygonCollider2D>();
-        PolygonCollider2D secondCollider = gameObject.AddComponent<PolygonCollider2D>();
+        Vector2[] points = new Vector2[originalPolygonCollider2D.points.Length + 1];
+        for (int i = 0; i < originalPolygonCollider2D.points.Length; i++)
+        {
+            points[i] = originalPolygonCollider2D.points[i];
+        }
+        points[points.Length - 1] = points[0];
+        edgeCollider2D.points = points;
+    }
 
-        Vector2[] points = firstCollider.points;
+    private void CreateInnerPolygonTrigger2D(PolygonCollider2D originalPolygonCollider2D)
+    {
+        Vector2[] points = originalPolygonCollider2D.points;
 
         for (int i = 0; i < points.Length; i++)
         {
-            Vector2 lastPoint = GetLastPoint(firstCollider.points, i);
-            Vector2 nextPoint = GetNextPoint(firstCollider.points, i);
+            Vector2 lastPoint = GetLastPoint(originalPolygonCollider2D.points, i);
+            Vector2 nextPoint = GetNextPoint(originalPolygonCollider2D.points, i);
 
-            Vector2 lastVector = lastPoint - firstCollider.points[i];
-            Vector2 nextVector = nextPoint - firstCollider.points[i];
+            Vector2 lastVector = lastPoint - originalPolygonCollider2D.points[i];
+            Vector2 nextVector = nextPoint - originalPolygonCollider2D.points[i];
 
             Vector2 directionVector = (lastVector.normalized + nextVector.normalized) / 2.0f;
 
             float angle = Vector2.SignedAngle(lastVector, nextVector);
-            if (angle > 0)
+            if (angle < 0)
             {
                 directionVector = -directionVector;
             }
 
-            points[i] = firstCollider.points[i] + (directionVector.normalized * offset);
+            points[i] = originalPolygonCollider2D.points[i] + (directionVector.normalized * offset);
         }
-        secondCollider.points = points;
+        polygonTrigger2D.points = points;
     }
 
     private Vector2 GetLastPoint(Vector2[] points, int index)

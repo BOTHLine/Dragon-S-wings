@@ -11,7 +11,9 @@ public class DottedLine : MonoBehaviour
     private List<GameObject> dots;
     private int lastCount = 0;
     private GameObject cursor;
-    // Use this for initialization
+
+    public bool shrinkDots = false;
+    private Vector3 startScaleDots;
 
 
     void Start()
@@ -19,6 +21,7 @@ public class DottedLine : MonoBehaviour
         startPoint = gameObject.transform.parent.position;
         dots = new List<GameObject>();
         cursor = (GameObject)Instantiate(Resources.Load("AimingDot"));
+        startScaleDots = cursor.transform.localScale;
         cursor.transform.localScale = cursor.transform.localScale * 2;
     }
 
@@ -77,7 +80,10 @@ public class DottedLine : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
-            dots[i].transform.position = startPoint + new Vector3(diff.x, diff.y, 0).normalized * offset + (step * i);
+            GameObject currentDot = dots[i];
+            currentDot.transform.position = startPoint + new Vector3(diff.x, diff.y, 0).normalized * offset + (step * i);
+
+            if(shrinkDots) currentDot.transform.localScale = startScaleDots - startScaleDots*(0.05f*i);
         }
 
         // Um in der Nächsten Runde Punkte die zu weit draußen sind wieder auszusortieren

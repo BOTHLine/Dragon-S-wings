@@ -215,7 +215,9 @@ public class Character : Entity
                 gameObject.layer = LayerList.PlayerDashing;
                 canDash = false;
                 timeDashing = 0.0f;
-                dashingDirection = aimingDirection.normalized;
+                Vector2 dashDirection = (Vector2)crosshair.transform.localPosition - boxCollider2D.offset;
+                dashTime = dashDirection.magnitude / dashSpeed;
+                dashingDirection = dashDirection.normalized;
                 Trailer.AddTrailer(spriteRenderer, dashTime, 0.05f, 1.0f, 10.0f, 0.1f);
                 break;
             case ActionState.Swinging:
