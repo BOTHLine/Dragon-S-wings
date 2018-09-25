@@ -14,7 +14,8 @@ public class Enemy : Entity
         WaitingForAttack,
         Staggered,
         Pushed,
-        Falling
+        Falling,
+        Pulled
     }
     public Sprite topSprite;
     public Sprite rightSprite;
@@ -56,6 +57,8 @@ public class Enemy : Entity
     public float fallTime = 0.1f;
     private float timeFalling = 0.0f;
 
+    public float pulledSpeed = 10.0f;
+
     private void Awake()
     {
         InitComponents();
@@ -66,6 +69,7 @@ public class Enemy : Entity
     private void InitComponents()
     {
         InitRigidbody2D();
+        spriteRender = GetComponent<SpriteRenderer>();
 
         player = FindObjectOfType<Player>();
 
@@ -161,6 +165,9 @@ public class Enemy : Entity
             case ActionState.Falling:
                 HandleFallingAction();
                 break;
+            case ActionState.Pulled:
+                rigidbody2D.AddForce((player.character.transform.position - transform.position).normalized * pulledSpeed * rigidbody2D.drag);
+                break;
         }
     }
 
@@ -202,6 +209,9 @@ public class Enemy : Entity
             case ActionState.Falling:
                 gameObject.layer = LayerList.EnemyFalling;
                 break;
+            case ActionState.Pulled:
+                gameObject.layer = LayerList.EnemyDashing;
+                break;
         }
 
         currentActionState = newActionState;
@@ -210,15 +220,20 @@ public class Enemy : Entity
     private void LookAtPlayer()
     {
         Vector2 direction = player.character.transform.position - transform.position;
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90.0f;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg + 90.0f;
+        /*
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        */
+        hitArea.transform.rotation = attackRange.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+
+
+        UpdateSprite(angle);
     }
 
     private void MoveTowardsPlayer()
     {
-    //    LookAtPlayer();
+        LookAtPlayer();
         rigidbody2D.AddForce((player.character.transform.position - transform.position).normalized * moveSpeed * rigidbody2D.drag);
-        UpdateSprite();
     }
 
     private void Attack()
@@ -272,14 +287,41 @@ public class Enemy : Entity
         return (currentActionState == ActionState.Idling || currentActionState == ActionState.Falling);
     }
 
-    private void UpdateSprite()
+    private void UpdateSprite(float angle)
     {
+        /*
         if (Mathf.Abs(rigidbody2D.velocity.x) > Mathf.Abs(rigidbody2D.velocity.y))
         {
-            spriteRender.sprite = rigidbody2D.velocity.x > 0 ? rightSprite : leftSprite;
+            if ( Mathf.Abs(rigidbody2D.velocity.x) >= 0.1f )
+                spriteRender.sprite = rigidbody2D.velocity.x > 0 ? rightSprite : leftSprite;
         } else if (Mathf.Abs(rigidbody2D.velocity.x) < Mathf.Abs(rigidbody2D.velocity.y))
         {
-            spriteRender.sprite = rigidbody2D.velocity.y > 0 ? topSprite : leftSprite;
+            if (Mathf.Abs(rigidbody2D.velocity.y) >= 0.1f)
+                spriteRender.sprite = rigidbody2D.velocity.y > 0 ? topSprite : downSprite;
+        }
+        */
+        if (angle > 315 || angle <= 45)
+        {
+            spriteRender.sprite = downSprite;
+        } else if (angle > 45 && angle <= 135)
+        {
+            spriteRender.sprite = rightSprite;
+        } else if (angle > 135 && angle <= 225)
+        {
+            spriteRender.sprite = topSprite;
+        } else if (angle > 225 && angle <= 315)
+        {
+            spriteRender.sprite = leftSprite;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.layer == LayerList.LevelTrigger)
+        {
+            Destroy(gameObject);
+            player.hook.ResetAnchorPoints();
+            player.character.SetActionState(Character.ActionState.Free);
         }
     }
 }

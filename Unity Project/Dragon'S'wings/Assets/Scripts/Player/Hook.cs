@@ -17,8 +17,6 @@ public class Hook : MonoBehaviour
             this.position = position;
             this.angle = angle;
             ropeLength = Vector2.Distance(position, lastPosition);
-
-            Debug.Log("Rope Length: " + ropeLength);
         }
 
         public AnchorPoint(Vector2 position, bool angle)
@@ -89,7 +87,7 @@ public class Hook : MonoBehaviour
     private void FixedUpdate()
     {
         // Debug.Log("Amount of Points: " + anchorPoints.Count);
-        if (anchorPoints.Count > 0)
+        if (anchorPoints.Count > 0 && player.character.currentActionState != Character.ActionState.PullingEnemy)
         {
             HandleUnwrapNew();
             HandleWrap();
@@ -114,14 +112,31 @@ public class Hook : MonoBehaviour
 
         if (hit.collider)
         {
-            Vector2 anchorPosition = hit.point + ((Vector2)transform.position - hit.point).normalized * distanceThreshold;
-            anchorPoints.Add(new AnchorPoint(anchorPosition, false));
-            availableRopeLength = ((Vector2)transform.position - anchorPosition).magnitude;
-            player.character.distanceJoint2D.enabled = true;
-            player.character.distanceJoint2D.distance = availableRopeLength;
-            player.character.distanceJoint2D.connectedAnchor = GetLastAnchorPoint().position;
-            player.character.SetActionState(Character.ActionState.Hooked);
+            if (hit.collider.tag == "Hookable")
+            {
+                Vector2 anchorPosition = hit.point + ((Vector2)transform.position - hit.point).normalized * distanceThreshold;
+                anchorPoints.Add(new AnchorPoint(anchorPosition, false));
+                availableRopeLength = ((Vector2)transform.position - anchorPosition).magnitude;
+                player.character.distanceJoint2D.enabled = true;
+                player.character.distanceJoint2D.distance = availableRopeLength;
+                player.character.distanceJoint2D.connectedAnchor = GetLastAnchorPoint().position;
+                player.character.SetActionState(Character.ActionState.Hooked);
+            }
+            else if (hit.collider.tag == "Enemy")
+            {
+                Vector2 anchorPosition = hit.point + ((Vector2)transform.position - hit.point).normalized * distanceThreshold;
+                anchorPoints.Add(new AnchorPoint(anchorPosition, false));
+                availableRopeLength = ((Vector2)transform.position - anchorPosition).magnitude;
+                player.character.distanceJoint2D.enabled = true;
+                player.character.distanceJoint2D.distance = availableRopeLength;
+                player.character.distanceJoint2D.connectedAnchor = GetLastAnchorPoint().position;
+                player.character.SetActionState(Character.ActionState.PullingEnemy);
+
+                Enemy enemy = hit.collider.GetComponent<Enemy>();
+                enemy.SetActionState(Enemy.ActionState.Pulled);
+            }
         }
+        
     }
 
     private void HandleUnwrapNew()
@@ -200,7 +215,6 @@ public class Hook : MonoBehaviour
     private Vector2 GetClosestColliderPointFromRaycastHit2D(RaycastHit2D hit)
     {
         PolygonCollider2D coll = (PolygonCollider2D)hit.collider;
-        Debug.Log(hit.collider);
 
         Vector2[] points = new Vector2[coll.points.Length];
         for (int i = 0; i < points.Length; i++)

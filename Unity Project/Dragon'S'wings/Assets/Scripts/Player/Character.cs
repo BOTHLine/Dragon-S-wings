@@ -15,7 +15,8 @@ public class Character : Entity
         Hooked,
         Swinging,
         Pulling,
-        Repositioning
+        Repositioning,
+        PullingEnemy
     }
 
     private Player player;
@@ -151,6 +152,9 @@ public class Character : Entity
             case ActionState.Swinging:
                 HandleReleaseInput();
                 break;
+            case ActionState.PullingEnemy:
+                HandleReleaseInput();
+                break;
         }
     }
 
@@ -178,6 +182,8 @@ public class Character : Entity
                 break;
             case ActionState.Repositioning:
                 HandleRepositioningAction();
+                break;
+            case ActionState.PullingEnemy:
                 break;
         }
     }

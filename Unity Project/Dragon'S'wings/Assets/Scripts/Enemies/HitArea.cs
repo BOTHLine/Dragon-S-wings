@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent (typeof(PolygonCollider2D))]
-[RequireComponent (typeof(SpriteRenderer))]
 public class HitArea : MonoBehaviour
 {
     private SpriteRenderer spriteRenderer;
@@ -24,7 +23,7 @@ public class HitArea : MonoBehaviour
 
     private void InitSpriteRenderer()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         spriteRenderer.enabled = false;
     }
 

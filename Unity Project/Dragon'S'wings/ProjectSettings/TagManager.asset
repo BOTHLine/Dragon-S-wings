@@ -3,7 +3,9 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Hookable
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -40,4 +42,16 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 2957112059
+    locked: 0
+  - name: Ground
+    uniqueID: 1490457341
+    locked: 0
+  - name: Sortable
+    uniqueID: 3479675361
+    locked: 0
+  - name: Foreground
+    uniqueID: 3122403323
     locked: 0

@@ -20,13 +20,15 @@ public class FadeInAndOut : MonoBehaviour
     }
 
 
-    void OnTriggerEnter2D()
+    void OnTriggerEnter2D(Collider2D collider)
     {
-        Debug.Log("Jup");
-        if(!fadeIsActive) activateFading();
-        else
+        if (collider.tag == "Player")
         {
-            faded = !faded;
+            if (!fadeIsActive) activateFading();
+            else
+            {
+                faded = !faded;
+            }
         }
     }
 
