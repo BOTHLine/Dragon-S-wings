@@ -41,8 +41,8 @@ public class CamFollowPlayer : MonoBehaviour
         playerRigidBody = playerGameObject.GetComponent<Rigidbody2D>();
 
         boarderLine = this.gameObject.AddComponent<LineRenderer>();
-        boarderLine.startWidth = 0.03f;
-        boarderLine.endWidth = 0.03f;
+        boarderLine.startWidth = 0.0f;
+        boarderLine.endWidth = 0.0f;
         boarderLine.positionCount = 10;
 
         // camOffset = this.transform.position;
@@ -126,8 +126,7 @@ public class CamFollowPlayer : MonoBehaviour
 
         Vector3 desiredPosition = target.position + camOffset;
         desiredPosition = checkWorldBoarders(new Vector3(desiredPosition.x, desiredPosition.y, camZCoord));
-
-
+        
         transform.position = desiredPosition;
     }
 
